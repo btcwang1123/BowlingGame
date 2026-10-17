@@ -1,0 +1,25 @@
+# 讓 Git 自動處理換行,避免 LF/CRLF 警告
+* text=auto
+
+# Unity 相關文字檔統一用 LF
+*.cs       text eol=lf diff=csharp
+*.shader   text
+*.md       text
+
+# Unity YAML 資產,啟用合併工具
+*.unity    merge=unityyamlmerge eol=lf
+*.prefab   merge=unityyamlmerge eol=lf
+*.asset    merge=unityyamlmerge eol=lf
+*.meta     merge=unityyamlmerge eol=lf
+*.mat      merge=unityyamlmerge eol=lf
+*.controller merge=unityyamlmerge eol=lf
+
+# 二進位檔,不要做換行轉換
+*.png  binary
+*.jpg  binary
+*.fbx  binary
+*.wav  binary
+*.mp3  binary
+*.ogg  binary
+*.dll  binary
+*.unitypackage binary
