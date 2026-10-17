@@ -45,7 +45,7 @@
 - Deviation: `SaveData` 裡 `settings`/`stats` 做成 `SaveData` 的 nested class（不是獨立檔案），維持「一個檔案一個頂層類別」。`cachedProfile` 先存成 `cachedProfileJson`（原始字串），等 T19+ 真的有 `PlayerProfile` 型別再解。`SaveSystem.Save()` 在 `Application.isPlaying` 時才用隱藏的 `Runner` MonoBehaviour 跑 0.5 秒合併寫入，Editor／EditMode 測試裡（沒有 Update 迴圈）直接同步寫入，測試才不用等。Review 抓到兩個 bug：(1) 合併寫入期間被 OS 中止（切到背景／被殺）會漏存，已在 `Runner` 補上 `OnApplicationPause`／`OnApplicationQuit` 強制 flush；(2) `save.json` 格式像 JSON（有大括號）但內容解不開時，原本會讓 `JsonUtility.FromJson` 直接丟例外，使 `save.bak` 的備援失效，已讓 `FileSaveStore`／`SaveSystem` 都包 try/catch 並視為「讀取失敗」退回備援，新增對應測試。
 
 ### T04: 多語系改成資料檔
-- Status: todo
+- Status: done
 - Depends on: T01
 - Goal: 字串從 `Loc.cs` 的程式碼搬到資料檔，方便新增大量線上功能的文字和之後找翻譯。
 - Files: `Resources/Loc/zh-TW.json`、`Resources/Loc/en.json`、修改 `Loc.cs`、`Tests/LocTests.cs`
@@ -55,6 +55,7 @@
   - 缺鍵時回傳 `"#key"` 並在 Editor 印警告
   - 切換語言後畫面上的文字立刻更新（`LocText` 組件聽 `LanguageChanged`）
 - Notes: 新增 `UI/Widgets/LocText.cs`：掛在 TMP 文字上，填鍵名就好。
+- Deviation: 兩個 json 檔用 `{ "entries": [{ "key", "value" }] }` 陣列格式（搭配 `JsonUtility`），不是原生 JSON 物件／字典，因為專案目前沒有 Newtonsoft 套件、`JsonUtility` 也不支援 Dictionary；和 `SaveSystem` 用同一套 `JsonUtility` 慣例。`Loc.Language` 直接包著 `GameSettings.Language`（讀寫同一份存檔資料），只在值真的改變時才發 `LanguageChanged`；`BowlingUI.cs` 原本直接寫 `GameSettings.Language` 的那一行改成寫 `Loc.Language`，之後才會觸發事件。`UI/Widgets/LocText.cs` 目前沒有放進任何 asmdef（`Bowling.UI` 要等 T08 才建立），先掛在預設的 `Assembly-CSharp`，靠 `Bowling.Gameplay` 的 `autoReferenced` 讓它讀得到 `Loc`。
 
 ### T05: iOS 建置設定與效能
 - Status: todo

@@ -339,8 +339,8 @@ public class BowlingUI : MonoBehaviour
         if (!Mathf.Approximately(vol, GameSettings.Volume)) GameSettings.Volume = vol;
         GameSettings.Vibration = Pair(Loc.T("vibration"), Loc.T("on"), Loc.T("off"), GameSettings.Vibration);
         GameSettings.AimGuide = Pair(Loc.T("aim_guide"), Loc.T("on"), Loc.T("off"), GameSettings.AimGuide);
-        bool zh = Pair(Loc.T("language"), "繁體中文", "English", GameSettings.Language == "zh");
-        if (zh != (GameSettings.Language == "zh")) GameSettings.Language = zh ? "zh" : "en";
+        bool zh = Pair(Loc.T("language"), "繁體中文", "English", Loc.Language == "zh");
+        if (zh != (Loc.Language == "zh")) Loc.Language = zh ? "zh" : "en";
         GUI.EndScrollView();
     }
 

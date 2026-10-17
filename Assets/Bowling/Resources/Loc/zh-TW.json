@@ -1,0 +1,380 @@
+{
+  "entries": [
+    {
+      "key": "tagline",
+      "value": "揮動手機，打出全倒！"
+    },
+    {
+      "key": "play",
+      "value": "開始遊戲"
+    },
+    {
+      "key": "practice",
+      "value": "練習"
+    },
+    {
+      "key": "challenges_stars",
+      "value": "挑戰關卡　★ {0}/{1}"
+    },
+    {
+      "key": "stats",
+      "value": "統計"
+    },
+    {
+      "key": "settings",
+      "value": "設定"
+    },
+    {
+      "key": "back",
+      "value": "‹ 返回"
+    },
+    {
+      "key": "start",
+      "value": "開始"
+    },
+    {
+      "key": "controls",
+      "value": "操作方式"
+    },
+    {
+      "key": "control_swipe",
+      "value": "滑動"
+    },
+    {
+      "key": "control_motion",
+      "value": "體感揮臂"
+    },
+    {
+      "key": "control_motion_unavailable",
+      "value": "這台裝置沒有陀螺儀，體感模式無法使用，會改用滑動操作。"
+    },
+    {
+      "key": "how_many_players",
+      "value": "幾位玩家？"
+    },
+    {
+      "key": "n_players",
+      "value": "{0} 位玩家"
+    },
+    {
+      "key": "players_hint",
+      "value": "多人時輪流傳手機，每局換人。"
+    },
+    {
+      "key": "practice_pick",
+      "value": "選擇要練習的球瓶"
+    },
+    {
+      "key": "leave_full",
+      "value": "全排 10 支"
+    },
+    {
+      "key": "leave_random",
+      "value": "隨機殘瓶"
+    },
+    {
+      "key": "change_leave",
+      "value": "換一組"
+    },
+    {
+      "key": "practice_stats",
+      "value": "{0} 球，清空率 {1}"
+    },
+    {
+      "key": "locked",
+      "value": "未解鎖"
+    },
+    {
+      "key": "balls_allowed",
+      "value": "可以投 {0} 球"
+    },
+    {
+      "key": "star_rule",
+      "value": "★★★ {0} 球內完成　★★ {1} 球內完成"
+    },
+    {
+      "key": "hint_swipe",
+      "value": "左右拖曳選位置，往上快速滑動丟球；滑出弧線可以打曲球"
+    },
+    {
+      "key": "hint_motion",
+      "value": "握緊手機，拇指按住螢幕，往後擺再往前揮，在最低點放開拇指"
+    },
+    {
+      "key": "hint_motion_swing",
+      "value": "揮臂中…往前揮到底時放開拇指！"
+    },
+    {
+      "key": "hint_swipe_short",
+      "value": "左右拖曳選位置，再往上滑動丟球"
+    },
+    {
+      "key": "hint_swipe_faster",
+      "value": "再滑快一點！"
+    },
+    {
+      "key": "swing_too_short",
+      "value": "揮臂太短了，請做完整的動作"
+    },
+    {
+      "key": "swing_too_slow",
+      "value": "揮得太慢了，用力一點！"
+    },
+    {
+      "key": "no_backswing",
+      "value": "要先往後擺，再往前揮"
+    },
+    {
+      "key": "throw_info",
+      "value": "出手 {0:0} km/h · 角度 {1:+0.0;-0.0;0.0}° · {2}"
+    },
+    {
+      "key": "spin_right",
+      "value": "右曲球"
+    },
+    {
+      "key": "spin_left",
+      "value": "左曲球"
+    },
+    {
+      "key": "spin_none",
+      "value": "直球"
+    },
+    {
+      "key": "vs_last",
+      "value": "（比上一球 {0:+0;-0;±0} km/h）"
+    },
+    {
+      "key": "foul",
+      "value": "犯規！踩線了"
+    },
+    {
+      "key": "replay",
+      "value": "重播"
+    },
+    {
+      "key": "replay_label",
+      "value": "重播"
+    },
+    {
+      "key": "strike",
+      "value": "全倒！"
+    },
+    {
+      "key": "spare",
+      "value": "補中！"
+    },
+    {
+      "key": "gutter",
+      "value": "洗溝…"
+    },
+    {
+      "key": "pins_down",
+      "value": "{0} 支"
+    },
+    {
+      "key": "player_turn",
+      "value": "輪到 P{0}"
+    },
+    {
+      "key": "challenge_clear",
+      "value": "過關！"
+    },
+    {
+      "key": "challenge_fail",
+      "value": "挑戰失敗"
+    },
+    {
+      "key": "balls_used",
+      "value": "用了 {0} / {1} 球"
+    },
+    {
+      "key": "next_level",
+      "value": "下一關"
+    },
+    {
+      "key": "retry",
+      "value": "再試一次"
+    },
+    {
+      "key": "game_over",
+      "value": "比賽結束"
+    },
+    {
+      "key": "new_best",
+      "value": "★ 新紀錄！★"
+    },
+    {
+      "key": "best_score",
+      "value": "最高分：{0}"
+    },
+    {
+      "key": "game_summary",
+      "value": "全倒 {0}　補中 {1}　洗溝 {2}"
+    },
+    {
+      "key": "fastest_ball",
+      "value": "最快球速 {0:0} km/h"
+    },
+    {
+      "key": "play_again",
+      "value": "再玩一場"
+    },
+    {
+      "key": "paused",
+      "value": "暫停"
+    },
+    {
+      "key": "resume",
+      "value": "繼續"
+    },
+    {
+      "key": "restart",
+      "value": "重新開始"
+    },
+    {
+      "key": "main_menu",
+      "value": "回主選單"
+    },
+    {
+      "key": "stat_games",
+      "value": "比賽場數"
+    },
+    {
+      "key": "stat_best",
+      "value": "最高分"
+    },
+    {
+      "key": "stat_average",
+      "value": "平均分數"
+    },
+    {
+      "key": "stat_throws",
+      "value": "總投球數"
+    },
+    {
+      "key": "stat_strikes",
+      "value": "全倒"
+    },
+    {
+      "key": "stat_spares",
+      "value": "補中"
+    },
+    {
+      "key": "stat_gutters",
+      "value": "洗溝"
+    },
+    {
+      "key": "stat_top_speed",
+      "value": "最快球速"
+    },
+    {
+      "key": "stat_stars",
+      "value": "挑戰星星"
+    },
+    {
+      "key": "motion_grip_hint",
+      "value": "像拿保齡球一樣握住手機，螢幕朝上、手機頂端朝前。拇指按住螢幕代表握球，放開代表出手。"
+    },
+    {
+      "key": "calibrate",
+      "value": "揮臂校正"
+    },
+    {
+      "key": "recalibrate",
+      "value": "重新校正揮臂"
+    },
+    {
+      "key": "sensitivity",
+      "value": "體感力道"
+    },
+    {
+      "key": "aim_direction",
+      "value": "左右方向"
+    },
+    {
+      "key": "spin_direction",
+      "value": "旋轉方向"
+    },
+    {
+      "key": "normal",
+      "value": "正常"
+    },
+    {
+      "key": "reversed",
+      "value": "反轉"
+    },
+    {
+      "key": "hand",
+      "value": "慣用手"
+    },
+    {
+      "key": "ball_weight",
+      "value": "球的重量"
+    },
+    {
+      "key": "lb",
+      "value": "{0} 磅"
+    },
+    {
+      "key": "right_hand",
+      "value": "右手"
+    },
+    {
+      "key": "left_hand",
+      "value": "左手"
+    },
+    {
+      "key": "volume",
+      "value": "音量"
+    },
+    {
+      "key": "vibration",
+      "value": "震動"
+    },
+    {
+      "key": "aim_guide",
+      "value": "瞄準線"
+    },
+    {
+      "key": "language",
+      "value": "語言"
+    },
+    {
+      "key": "on",
+      "value": "開"
+    },
+    {
+      "key": "off",
+      "value": "關"
+    },
+    {
+      "key": "calib_instructions",
+      "value": "用你覺得舒服的力道揮臂 3 次。\n拇指按住螢幕 → 往後擺 → 往前揮 → 放開拇指。"
+    },
+    {
+      "key": "calib_progress",
+      "value": "{0} / 3"
+    },
+    {
+      "key": "calib_got",
+      "value": "收到！揮臂速度 {0:0.0} rad/s"
+    },
+    {
+      "key": "calib_done",
+      "value": "校正完成，可以開始玩了！"
+    },
+    {
+      "key": "safety_title",
+      "value": "安全提醒"
+    },
+    {
+      "key": "safety_text",
+      "value": "・請握緊手機，建議使用手機吊繩。\n・確認周圍沒有人、寵物或易碎物品。\n・揮臂時不要真的把手機丟出去！\n・用自己舒服的力道就好，不需要用全力。"
+    },
+    {
+      "key": "understood",
+      "value": "我知道了"
+    }
+  ]
+}

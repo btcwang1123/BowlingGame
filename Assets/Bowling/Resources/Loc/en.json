@@ -1,0 +1,380 @@
+{
+  "entries": [
+    {
+      "key": "tagline",
+      "value": "Swing your phone. Knock 'em all down."
+    },
+    {
+      "key": "play",
+      "value": "Play"
+    },
+    {
+      "key": "practice",
+      "value": "Practice"
+    },
+    {
+      "key": "challenges_stars",
+      "value": "Challenges　★ {0}/{1}"
+    },
+    {
+      "key": "stats",
+      "value": "Stats"
+    },
+    {
+      "key": "settings",
+      "value": "Settings"
+    },
+    {
+      "key": "back",
+      "value": "‹ Back"
+    },
+    {
+      "key": "start",
+      "value": "Start"
+    },
+    {
+      "key": "controls",
+      "value": "Controls"
+    },
+    {
+      "key": "control_swipe",
+      "value": "Swipe"
+    },
+    {
+      "key": "control_motion",
+      "value": "Swing the phone"
+    },
+    {
+      "key": "control_motion_unavailable",
+      "value": "This device has no gyroscope, so swipe controls are used instead."
+    },
+    {
+      "key": "how_many_players",
+      "value": "How many players?"
+    },
+    {
+      "key": "n_players",
+      "value": "{0} player(s)"
+    },
+    {
+      "key": "players_hint",
+      "value": "Pass the phone around: players take turns each frame."
+    },
+    {
+      "key": "practice_pick",
+      "value": "Pick what to practise"
+    },
+    {
+      "key": "leave_full",
+      "value": "Full rack"
+    },
+    {
+      "key": "leave_random",
+      "value": "Random leave"
+    },
+    {
+      "key": "change_leave",
+      "value": "Next leave"
+    },
+    {
+      "key": "practice_stats",
+      "value": "{0} balls, {1} cleared"
+    },
+    {
+      "key": "locked",
+      "value": "Locked"
+    },
+    {
+      "key": "balls_allowed",
+      "value": "{0} balls allowed"
+    },
+    {
+      "key": "star_rule",
+      "value": "★★★ within {0} ball(s)　★★ within {1}"
+    },
+    {
+      "key": "hint_swipe",
+      "value": "Drag left/right to pick your spot, then flick up to bowl. Curve the flick to hook."
+    },
+    {
+      "key": "hint_motion",
+      "value": "Grip the phone, hold your thumb on the screen, swing back then forward, and lift your thumb at the bottom."
+    },
+    {
+      "key": "hint_motion_swing",
+      "value": "Swinging… lift your thumb as your arm comes through!"
+    },
+    {
+      "key": "hint_swipe_short",
+      "value": "Drag to aim, flick up to bowl"
+    },
+    {
+      "key": "hint_swipe_faster",
+      "value": "Flick up faster!"
+    },
+    {
+      "key": "swing_too_short",
+      "value": "Too short — make a full swing"
+    },
+    {
+      "key": "swing_too_slow",
+      "value": "Too slow — swing harder!"
+    },
+    {
+      "key": "no_backswing",
+      "value": "Swing back first, then forward"
+    },
+    {
+      "key": "throw_info",
+      "value": "Release {0:0} km/h · angle {1:+0.0;-0.0;0.0}° · {2}"
+    },
+    {
+      "key": "spin_right",
+      "value": "hook right"
+    },
+    {
+      "key": "spin_left",
+      "value": "hook left"
+    },
+    {
+      "key": "spin_none",
+      "value": "straight"
+    },
+    {
+      "key": "vs_last",
+      "value": " ({0:+0;-0;±0} km/h vs last)"
+    },
+    {
+      "key": "foul",
+      "value": "FOUL! Over the line"
+    },
+    {
+      "key": "replay",
+      "value": "Replay"
+    },
+    {
+      "key": "replay_label",
+      "value": "REPLAY"
+    },
+    {
+      "key": "strike",
+      "value": "STRIKE!"
+    },
+    {
+      "key": "spare",
+      "value": "SPARE!"
+    },
+    {
+      "key": "gutter",
+      "value": "Gutter…"
+    },
+    {
+      "key": "pins_down",
+      "value": "{0} pins"
+    },
+    {
+      "key": "player_turn",
+      "value": "P{0}'s turn"
+    },
+    {
+      "key": "challenge_clear",
+      "value": "CLEARED!"
+    },
+    {
+      "key": "challenge_fail",
+      "value": "Not this time"
+    },
+    {
+      "key": "balls_used",
+      "value": "Used {0} of {1} balls"
+    },
+    {
+      "key": "next_level",
+      "value": "Next level"
+    },
+    {
+      "key": "retry",
+      "value": "Try again"
+    },
+    {
+      "key": "game_over",
+      "value": "GAME OVER"
+    },
+    {
+      "key": "new_best",
+      "value": "★ New best score! ★"
+    },
+    {
+      "key": "best_score",
+      "value": "Best: {0}"
+    },
+    {
+      "key": "game_summary",
+      "value": "Strikes {0}   Spares {1}   Gutters {2}"
+    },
+    {
+      "key": "fastest_ball",
+      "value": "Fastest ball {0:0} km/h"
+    },
+    {
+      "key": "play_again",
+      "value": "Play again"
+    },
+    {
+      "key": "paused",
+      "value": "Paused"
+    },
+    {
+      "key": "resume",
+      "value": "Resume"
+    },
+    {
+      "key": "restart",
+      "value": "Restart"
+    },
+    {
+      "key": "main_menu",
+      "value": "Main menu"
+    },
+    {
+      "key": "stat_games",
+      "value": "Games played"
+    },
+    {
+      "key": "stat_best",
+      "value": "Best score"
+    },
+    {
+      "key": "stat_average",
+      "value": "Average score"
+    },
+    {
+      "key": "stat_throws",
+      "value": "Balls thrown"
+    },
+    {
+      "key": "stat_strikes",
+      "value": "Strikes"
+    },
+    {
+      "key": "stat_spares",
+      "value": "Spares"
+    },
+    {
+      "key": "stat_gutters",
+      "value": "Gutters"
+    },
+    {
+      "key": "stat_top_speed",
+      "value": "Fastest ball"
+    },
+    {
+      "key": "stat_stars",
+      "value": "Challenge stars"
+    },
+    {
+      "key": "motion_grip_hint",
+      "value": "Hold the phone like a bowling ball: screen up, top pointing forward. Thumb on the screen = holding the ball; lift it to release."
+    },
+    {
+      "key": "calibrate",
+      "value": "Calibrate swing"
+    },
+    {
+      "key": "recalibrate",
+      "value": "Recalibrate swing"
+    },
+    {
+      "key": "sensitivity",
+      "value": "Swing power"
+    },
+    {
+      "key": "aim_direction",
+      "value": "Aim direction"
+    },
+    {
+      "key": "spin_direction",
+      "value": "Spin direction"
+    },
+    {
+      "key": "normal",
+      "value": "Normal"
+    },
+    {
+      "key": "reversed",
+      "value": "Reversed"
+    },
+    {
+      "key": "hand",
+      "value": "Bowling hand"
+    },
+    {
+      "key": "ball_weight",
+      "value": "Ball weight"
+    },
+    {
+      "key": "lb",
+      "value": "{0} lb"
+    },
+    {
+      "key": "right_hand",
+      "value": "Right"
+    },
+    {
+      "key": "left_hand",
+      "value": "Left"
+    },
+    {
+      "key": "volume",
+      "value": "Volume"
+    },
+    {
+      "key": "vibration",
+      "value": "Vibration"
+    },
+    {
+      "key": "aim_guide",
+      "value": "Aim guide"
+    },
+    {
+      "key": "language",
+      "value": "Language"
+    },
+    {
+      "key": "on",
+      "value": "On"
+    },
+    {
+      "key": "off",
+      "value": "Off"
+    },
+    {
+      "key": "calib_instructions",
+      "value": "Make 3 comfortable swings.\nThumb on screen → swing back → swing forward → lift thumb."
+    },
+    {
+      "key": "calib_progress",
+      "value": "{0} / 3"
+    },
+    {
+      "key": "calib_got",
+      "value": "Got it! Swing speed {0:0.0} rad/s"
+    },
+    {
+      "key": "calib_done",
+      "value": "All set — go bowl!"
+    },
+    {
+      "key": "safety_title",
+      "value": "Safety first"
+    },
+    {
+      "key": "safety_text",
+      "value": "• Grip the phone firmly; a wrist strap is a good idea.\n• Make sure nobody, no pets and nothing fragile is nearby.\n• Don't actually let go of the phone!\n• A comfortable swing is plenty — no need to go all out."
+    },
+    {
+      "key": "understood",
+      "value": "Got it"
+    }
+  ]
+}

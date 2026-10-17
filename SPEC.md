@@ -58,7 +58,7 @@
 | T01 | 組件定義（asmdef）與 EditMode 測試 | done | [foundation](spec/foundation.md) |
 | T02 | 拆分 BowlingGame、產出 RollReport | done | [foundation](spec/foundation.md) |
 | T03 | JSON 存檔系統與 PlayerPrefs 遷移 | done | [foundation](spec/foundation.md) |
-| T04 | 多語系改成資料檔 | todo | [foundation](spec/foundation.md) |
+| T04 | 多語系改成資料檔 | done | [foundation](spec/foundation.md) |
 | T05 | iOS 建置設定與效能 | todo | [foundation](spec/foundation.md) |
 | T06 | 體感實機紀錄與重放工具 | todo | [foundation](spec/foundation.md) |
 | T07 | 標準局難度調整 | todo | [foundation](spec/foundation.md) |
