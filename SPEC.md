@@ -1,264 +1,110 @@
-# 體感保齡球 — 遊戲規格書
+# 體感保齡球（BowlingGame）Spec
 
-> 狀態：v0.7（程式功能全部完成；待手機實測與上架準備）　最後更新：2026-10-15
-> 引擎：Unity 6000.6.5f1（URP、Input System）　平台：iOS、Android、Windows
+> v1.0 上架規格　最後更新：2026-10-17　舊版功能紀錄（v0.1～v0.7）：[spec/design-v0.7.md](spec/design-v0.7.md)
 
-## 1. 遊戲概念
+## Overview
+握著手機做出真正的保齡球揮臂動作來投球的霓虹夜光風格手遊（也支援滑動操作）。單機已有標準 10 局、練習、19 關挑戰、本機 1～4 人。v1.0 要做三件事：介面改成精緻的手遊風格（大廳、底部導覽、貨幣列、動畫）、接上自己寫的後端（帳號、即時輪流對戰、排位賽、每日任務、好友、聊天、對戰表情、讚美對手）、免費＋內購＋獎勵廣告，先上架 iOS。
+核心循環：大廳 → 選模式（單機／排位／好友對戰）→ 投球 → 結算拿 XP／金幣／排位分 → 完成任務 → 換外觀 → 再玩。
 
-**一句話**：握著手機，做出真正的保齡球揮臂動作，遊戲會讀取你的球速、方向和旋轉。
+## Tech
+- Unity 6000.6.5f1，URP 17.6、Input System 1.20、uGUI 2.6（含 TextMeshPro）
+- 首發 iOS 15+、僅 iPhone、直向鎖定；之後 Android 8+（API 26）。WebGL 版（`docs/`）只當試玩頁，不接線上功能
+- 客戶端要加的套件：`com.unity.nuget.newtonsoft-json`、`com.unity.purchasing`（StoreKit 2）、`com.unity.mobile.notifications`、Sign in with Apple 外掛、廣告 SDK（AdMob）、Firebase Crashlytics／Analytics
+- 伺服器：TypeScript + Node.js 22、Fastify（REST）、`ws`（WebSocket）、PostgreSQL 16（Prisma）、Redis 7；本機用 docker compose
+- 測試：Unity Test Framework（EditMode）＋ 伺服器 vitest
+  - Unity：`/Applications/Unity/Hub/Editor/6000.6.5f1/Unity.app/Contents/MacOS/Unity -batchmode -projectPath . -runTests -testPlatform EditMode -testResults Logs/editmode.xml`
+  - 伺服器：`cd Server && npm test`
 
-**和市面上同類遊戲的差別**
-（同類遊戲：Bowling Central、Swing Bowling King、I-play Bowling）
+## Architecture
+- `Bowling.Core`（純 C#）：`BowlingScore`、`SwingDetector`、`ChallengeLevels`、資料模型、網路 DTO；不依賴 MonoBehaviour，可測試
+- `Bowling.Gameplay`：`BowlingGame`（流程）、`BowlingBall`、`Pin`、`Bowler`、`Obstacle`、`BowlingFX`、`BowlingAudio`、`MotionInput`。每球結束發出 `RollReport`
+- `Bowling.UI`：uGUI 畫面堆疊 `UIRouter`；畫面只讀狀態、呼叫服務，不直接改遊戲物件
+- `Bowling.Net`：`ApiClient`（REST + JWT）、`RealtimeClient`（WebSocket）、各功能服務（`AuthService`、`MatchService`、`FriendService`、`ChatService`、`MissionService`、`ShopService`）
+- `Bowling.Meta`：存檔、經濟、外觀、任務的客戶端狀態（`SaveSystem`、`Wallet`、`Inventory`）
+- 溝通方式：靜態 `Services` 註冊表（啟動時建立）＋ C# event；伺服器推播事件經 `RealtimeClient` 分派到主執行緒
+- `Server/`：`src/modules/<auth|profile|match|matchmaking|friends|chat|missions|shop|moderation>`，每模組 `routes.ts`、`service.ts`、`ws.ts`；Postgres 存永久資料，Redis 存在線狀態／配對佇列／排行榜
+- 資料夾：`Assets/Bowling/{Core,Gameplay,UI,Net,Meta,Editor,Tests}/`、`Assets/Bowling/UI/{Screens,Widgets,Theme}`、`Assets/Bowling/Resources/{Loc,Config}`、`Server/`、`spec/`
 
-1. **真的要揮臂**：舊遊戲常被批評「輕輕甩一下手腕就能投」，本作的判定要用完整的揮臂動作。
-2. **出手數據回饋**：每球投完都顯示球速、出手角度、旋轉，讓玩家想練得更好。
-3. **關卡模式**：除了標準保齡球，還有加入障礙和特殊球的挑戰關卡。
-4. **霓虹夜光風格**：黑暗場館、發光燈管、光暈特效，加上風格化的霓虹運動員角色。
+## Conventions
+- 程式碼識別字用英文，玩家看到的文字一律走 `Loc.T("key")`，鍵名 `area.thing`（例：`lobby.play`）
+- 一個類別一個檔案；MonoBehaviour 檔名＝類別名；組件用 `[SerializeField] private`，不用 public 欄位
+- 純邏輯放 `Bowling.Core` 並寫 EditMode 測試；Editor 選單工具保留，但檢查邏輯要能被測試呼叫
+- UI 一律 uGUI + TMP，字型用 `UITheme` 指定的 Noto Sans TC SDF；不再新增 IMGUI
+- 動畫用自己的 `UITween`（不引入 DOTween）；按鈕統一用 `NeonButton`（縮放＋音效＋震動）
+- 伺服器說了算：貨幣、背包、任務進度、排位分、比賽分數都以伺服器為準，客戶端只顯示
+- 網路訊息：`{ "t": "match.roll", "id": 12, "d": {...} }`；型別名 `<模組>.<動作>`，客戶端 DTO 與 `Server/src/protocol.ts` 同名同欄位
+- 伺服器 REST 前綴 `/v1`；錯誤回 `{ code, message }`；所有寫入要冪等（帶 `requestId`）
+- 新增 Unity 場景／Prefab 接線寫在任務的 Manual，不靠程式在執行時偷偷建立
 
-**目標玩家**：想找輕鬆體感遊戲的手機玩家，以及朋友聚會時輪流傳著手機玩的場合。
+## Data
+- 客戶端存檔 `SaveData`（JSON，`Application.persistentDataPath/save.json`）：`version`、`settings`、`stats`、`challengeStars[]`、`tutorialDone`、`cachedProfile`；從 PlayerPrefs 一次性遷移
+- `PlayerProfile`：`id`、`nickname`、`avatarId`、`level`、`xp`、`coins`、`gems`、`mmr`、`tier`、`commends`、`equipped{ball,trail,outfit}`
+- `RollReport`：`frame`、`roll`、`standingBefore`(10-bit)、`knockedMask`(10-bit)、`speed`、`angle`、`hook`、`foul`、`durationMs`、`replay`(壓縮關鍵影格)
+- `Match`：`id`、`mode`(ranked|friend)、`players[]`、`turn`、`frames[][]`、`status`、`startedAt`、`result`
+- 伺服器表：`users`、`auth_identities`、`profiles`、`matches`、`match_rolls`、`ratings`、`seasons`、`friendships`、`blocks`、`messages`、`mission_instances`、`inventory`、`wallet_ledger`、`purchases`、`commends`、`reports`
+- 設定資料（任務模板、商品、外觀、排位段位）放 `Server/config/*.json`，客戶端啟動時抓 `/v1/config`
 
----
+## Out of scope
+- 伺服器端重跑物理（防作弊只做合理性檢查＋保存重播）
+- 即時同步球的物理（對手看到的是「重播」，不是同一顆球）
+- 3 人以上線上房間、觀戰、公會、群組聊天、自由文字的對戰中聊天
+- 賽季通行證、轉蛋／抽卡、Android 首發、Apple Watch、甲蟲主題外觀
 
-## 2. 目前完成（v0.1）
+## Tasks
+任務細節放在 `spec/` 底下，依相依順序排列。
 
-| 項目 | 說明 | 檔案 |
-|---|---|---|
-| 球道場景 | 真實尺寸：18.29 m 球道、溝槽、球瓶區、球坑、擋板 | `Editor/BowlingSceneBuilder.cs` |
-| 球與球瓶物理 | 6.5 kg 球、1.5 kg 球瓶（重心偏低）、上油球道的低摩擦 | `Scripts/BowlingBall.cs`、`Scripts/Pin.cs` |
-| 滑動丟球 | 按下的位置決定站位，往上滑的速度決定球速，滑的角度決定方向，路線弧度產生曲球 | `Scripts/BowlingGame.cs` |
-| 計分 | 完整 10 局規則（Strike、Spare、第 10 局加投） | `Scripts/BowlingScore.cs` |
-| 鏡頭 | 投球後跟著球走，停在球瓶前方 | `Scripts/BowlingGame.cs` |
-| 介面 | 臨時的 IMGUI：記分板、提示文字、New game 按鈕 | `Scripts/BowlingGame.cs` |
-| 物理檢查工具 | 選單 Bowling → Physics Check，不必按 Play 就能測撞瓶效果 | `Editor/BowlingPhysicsCheck.cs` |
-
-### v0.2 新增
-
-| 項目 | 說明 |
-|---|---|
-| G1 撞瓶物理 | 修正球道接縫讓球跳過球瓶的問題：球道改成單一碰撞體，用摩擦合併模式讓球「滑」、球瓶「抓地」。現在正中央 7～10 支，pocket 幾乎都是 Strike |
-| G2 滑動手感 | 先左右拖曳選站位，往上滑時站位鎖定；球速 4～10 m/s 線性對應；角度最多 ±2°；弧度有死區，避免一般滑動意外變成曲球 |
-| V5 音效 | 程式合成：滾球聲（隨速度、位置變化，溝槽裡聲音較空）、球撞瓶、球瓶互撞、掉進球坑、Strike／Spare／洗溝／結束音效 |
-| R1 結算畫面 | 總分、最高分紀錄（新紀錄提示）、Strike／Spare／洗溝次數、最快球速、再玩一次 |
-| 檢查工具 | Bowling → Physics Sweep（重建場景並測試倒瓶數）、Bowling → Score Check（計分規則自動檢查） |
-
-### v0.2.5 霓虹風格＋角色
-
-**風格決定：霓虹夜光保齡球（Cosmic Bowling）**，角色用程式組成的風格化霓虹運動員。
-
-| 項目 | 說明 | 檔案 |
-|---|---|---|
-| 霓虹場館 | 黑暗場館、霓虹燈管（球道邊線、犯規線、瞄準箭頭、側牆、4 道拱門、球瓶上方面板）、隔壁球道、霧、4 盞彩色點光源 | `Editor/BowlingSceneBuilder.cs` |
-| 後製效果 | Bloom 光暈、色彩調整、暗角、輕微色差 | `Assets/Bowling/Settings/NeonVolume.asset` |
-| 霓虹燈動畫 | 所有燈管緩慢呼吸；Strike／Spare 時全場閃爍 | `Scripts/NeonGlow.cs` |
-| 球瓶外型 | 依照標準球瓶輪廓產生的模型，脖子有兩圈霓虹條紋；物理仍用膠囊體 | `BowlingSceneBuilder.MakePinMesh` |
-| 保齡球 | 發光紫色球、指孔、霓虹環（看得出轉動）、青→粉紅拖尾 | `Scripts/BowlingBall.cs` |
-| 角色 | 霓虹運動員：頭盔＋發光面罩、胸口／背後／腰帶／護腕／鞋底霓虹條。拿著球待機（會呼吸），投球動作：助走 → 後擺 → 滑步出手 → 收尾 | `Scripts/Bowler.cs` |
-| 特效 | 撞瓶火花、鏡頭震動；打中 pocket 時慢動作；Strike／Spare 時球瓶區噴發彩色火花 | `Scripts/BowlingFX.cs` |
-| 介面 | 霓虹配色記分板、結果文字彈出動畫（Strike／Spare 彩虹色）、結算面板 | `Scripts/BowlingGame.cs` |
-| 開發工具 | Bowling → Render Preview（不用按 Play 就能輸出截圖到 `Logs/Preview`）、Bowling → Build Windows、`-autoplay` 自動玩一整場的測試模式 | `Editor/BowlingPreview.cs`、`Editor/BowlingBuild.cs`、`Scripts/BowlingAutoplay.cs` |
-
-### v0.7 規格補完
-
-| 項目 | 說明 |
-|---|---|
-| 球的重量（G5） | 設定 → 球的重量 8～16 磅（預設 13 磅） |
-| 重播（G6） | 每球結果出來時右下角有「重播」，用 0.5 倍速回放整球（球、球瓶、障礙物） |
-| 犯規（G7） | 體感模式下太晚放開拇指＝踩線犯規：該球不算分、球瓶復原 |
-| 跟上一球比較（M12） | 出手數據多了「比上一球 ±N km/h」 |
-| 特殊球（L3） | 炸彈球（碰到球瓶或到球瓶區就爆炸）、超重球（2.2 倍重） |
-| 特殊球瓶（L4） | 重球瓶（2.5 倍重）、整排左右移動的球瓶（出手那一刻停下） |
-| 新關卡 | 15 重量級球瓶、16 炸彈球、17 移動球瓶、18 重量級對決，終極挑戰變成第 19 關 |
-
-### 還沒做、需要你決定或提供素材的部分
-
-| 項目 | 為什麼還沒做 |
-|---|---|
-| **體感在手機上實測** | 需要先安裝 Android（或 iOS）Build Support 模組、接上手機。揮臂判斷目前只用模擬資料測過 |
-| V1 正式 UI 框架＋內建中文字型 | 現在的介面（IMGUI＋系統字型）在 Windows 上中文顯示正常。換成 UI Toolkit 是大改寫；內建 Noto Sans TC 字型需要下載字型檔（約 10 MB）。建議等 Android 實機確認字型有問題再做 |
-| V3 正式角色模型與動畫 | 需要美術素材，例如 Mixamo 的角色和動作（要用你的 Adobe 帳號下載） |
-| V7 甲蟲主題外觀 | 需要美術方向和模型 |
-| L3 分裂球 | 優先度低，三種特殊球已經有兩種 |
-| R5 線上對戰、S5 成就、S6 排行榜 | 需要 Game Center／Google Play 開發者帳號和後端 |
-| 上架（v1.0） | 需要開發者帳號、隱私權政策、商店圖片，以及決定收費方式（見第 6 節） |
-
-### v0.6 完整版（體感、選單、模式、挑戰）
-
-| 項目 | 說明 | 檔案 |
-|---|---|---|
-| 體感揮臂 | 拇指按住螢幕＝握球，放開＝出手。不管手機怎麼握都能判斷：取旋轉最多的軸當揮臂軸，要有「後擺 → 前揮」，而且前揮要掃過約 40° 才算數（只甩手腕不算）。球速＝出手時的轉速，方向＝前揮時繞「上方」的轉動，旋轉＝出手前 0.2 秒繞手機長軸的翻轉 | `Scripts/SwingDetector.cs`、`Scripts/MotionInput.cs` |
-| 校正 | 設定 → 揮臂校正：用舒服的力道揮 3 次，以平均轉速當作 8.5 m/s 的基準 | `Scripts/BowlingUI.cs` |
-| 體感設定 | 體感力道（0.7～1.3×）、左右方向反轉、旋轉方向反轉（不同手機的感測器軸向可能不同） | `Scripts/GameSettings.cs` |
-| 安全提醒 | 第一次用體感模式開始遊戲前會顯示 | `Scripts/BowlingUI.cs` |
-| 震動 | 出手、全倒、過關時震動（可在設定關掉） | `Scripts/Haptics.cs` |
-| 出手數據 | 每球投完顯示球速、角度、直球／左右曲球 | `Scripts/BowlingGame.cs` |
-| 主選單 | 開始遊戲、練習、挑戰關卡（顯示星星總數）、統計、設定；背景是緩慢移動的球館鏡頭 | `Scripts/BowlingUI.cs` |
-| 設定 | 操作方式、慣用手（左撇子角色會左右鏡像）、音量、震動、瞄準線、語言（繁中／English） | `Scripts/BowlingUI.cs`、`Scripts/GameSettings.cs` |
-| 中文介面 | 所有文字都有繁中和英文，預設跟著裝置語言；字型用系統內建的中文字型（微軟正黑體、蘋方等） | `Scripts/Loc.cs` |
-| 多人 | 1～4 位玩家輪流，每局換人；每位玩家一排記分板；結束時顯示排名 | `Scripts/BowlingGame.cs` |
-| 練習 | 9 種球瓶組合（全排、7、10、7-10、4-6-7-10、2-4-5-8、3-6-10、1-2-4-7、隨機殘瓶），顯示清空率，可隨時換組 | `Scripts/BowlingGame.cs` |
-| 挑戰關卡 | 15 關（v0.7 增加到 19 關），依序解鎖：補瓶、固定牆、窄道、移動牆、旋轉擋板、小丘、金色目標球瓶、一球 9 支以上。1～3 顆星依用了幾球 | `Scripts/ChallengeLevels.cs`、`Scripts/Obstacle.cs` |
-| 統計 | 場數、最高分、平均、總投球、全倒、補中、洗溝、最快球速、挑戰星星 | `Scripts/PlayerStats.cs` |
-| 暫停 | 右上角 II 或 Esc：繼續、重新開始、回主選單 | `Scripts/BowlingUI.cs` |
-| 瞄準線 | 瞄準時球道上有一條淡淡的直線（可關） | `Scripts/BowlingGame.cs` |
-| 檢查工具 | Bowling → Swing Check（用模擬感測器資料測試揮臂判斷）、Bowling → Challenge Check（每關模擬數百種投法，確認可以過關、也不會太簡單）、`-autoplay` 會跑完雙人比賽＋15 關＋練習 | `Editor/BowlingSwingCheck.cs`、`Editor/BowlingChallengeCheck.cs` |
-
-**挑戰關卡難度（Challenge Check，第一球就達成目標的比例）**
-
-| 關卡 | 一球成功率 | | 關卡 | 一球成功率 |
-|---|---|---|---|---|
-| 1 暖身 | 6.7% | | 11 雙重移動牆 | 0.4% |
-| 2 左角落 | 15.9% | | 12 全力一擊 | 16.7% |
-| 3 右角落 | 15.9% | | 13 迷宮 | 1.5% |
-| 4 水桶 | 19.3% | | 14 四角分瓶 | 0%（三星要 2 球內） |
-| 5 中央的牆 | 1.5% | | 15 重量級球瓶 | 0.7% |
-| 6 窄道 | 7.4% | | 16 炸彈球 | 36.7% |
-| 7 移動牆 | 1.2% | | 17 移動球瓶 | 9.1% |
-| 8 金色角落 | 18.5% | | 18 重量級對決 | 2.2% |
-| 9 旋轉擋板 | 0.2% | | 19 終極挑戰 | 0.2% |
-| 10 顛簸球道 | 3.7% | | | |
-
-（這是隨機格點投法的比例，真人可以瞄準，實際會高很多。）
-
-**已知問題**
-- **體感操作還沒在真的手機上測過。** 揮臂判斷用模擬資料測試通過，但不同手機的感測器軸向、取樣率可能不同；設定裡有「左右方向／旋轉方向反轉」可以修正。
-- 物理檢查顯示一般比賽**偏簡單**：偏離 15 cm 的直球也常常全倒。
-- 滑動手感只做了數值推算，還沒有真人試玩調整。
-- 投球動作是程式控制的姿勢內插，比較僵硬。之後可以換成 Mixamo 等正式動畫。
-- 角色手臂碰不到地面，所以出手前球會從手上「滑」到球道，近看看得出來。
-- 音效是合成的，之後要換成真實錄音。
-- 介面用 IMGUI，中文靠系統字型；Android 上的中文字型還沒在實機確認。
-
----
-
-## 3. 功能清單
-
-優先度說明：**P0** 沒有就不算完成，**P1** 很重要，**P2** 有更好，**P3** 以後再說。
-
-### 3.1 核心玩法
-
-| # | 功能 | 優先度 | 說明 |
+| ID | 標題 | 狀態 | 檔案 |
 |---|---|---|---|
-| G1 | 撞瓶物理調整 | P0 | ✅ v0.2 |
-| G2 | 滑動手感調整 | P0 | ✅ v0.2 已調整數值，還需要真人試玩 |
-| G3 | 瞄準輔助 | P1 | ✅ v0.6 球道箭頭＋可關掉的瞄準線 |
-| G4 | 出球前左右移動站位 | P1 | ✅ 按住後左右拖曳，開始丟球時鎖定 |
-| G5 | 球的重量選擇 | P2 | ✅ v0.7 設定裡 8～16 磅：越重撞瓶越有力，出手速度 +6%～−6% |
-| G6 | 倒瓶慢動作／重播 | P2 | ✅ 慢動作（v0.2.5）＋每球投完可按「重播」看 0.5 倍速回放（v0.7） |
-| G7 | 犯規線判定 | P3 | ✅ v0.7 體感模式：揮到收尾、轉速掉到峰值 35% 以下才放開＝犯規，該球 0 分、球瓶復原 |
+| T01 | 組件定義（asmdef）與 EditMode 測試 | done | [foundation](spec/foundation.md) |
+| T02 | 拆分 BowlingGame、產出 RollReport | done | [foundation](spec/foundation.md) |
+| T03 | JSON 存檔系統與 PlayerPrefs 遷移 | done | [foundation](spec/foundation.md) |
+| T04 | 多語系改成資料檔 | todo | [foundation](spec/foundation.md) |
+| T05 | iOS 建置設定與效能 | todo | [foundation](spec/foundation.md) |
+| T06 | 體感實機紀錄與重放工具 | todo | [foundation](spec/foundation.md) |
+| T07 | 標準局難度調整 | todo | [foundation](spec/foundation.md) |
+| T08 | UI 框架：UIRouter、SafeArea、UITween | todo | [ui](spec/ui.md) |
+| T09 | 視覺主題與中文字型 | todo | [ui](spec/ui.md) |
+| T10 | 共用 UI 元件 | todo | [ui](spec/ui.md) |
+| T11 | 大廳畫面與底部導覽 | todo | [ui](spec/ui.md) |
+| T12 | 遊戲中 HUD 重做 | todo | [ui](spec/ui.md) |
+| T13 | 結算畫面重做 | todo | [ui](spec/ui.md) |
+| T14 | 挑戰地圖、設定、統計畫面 | todo | [ui](spec/ui.md) |
+| T15 | 新手教學與首次啟動流程 | todo | [ui](spec/ui.md) |
+| T16 | 啟動、載入、轉場、背景音樂 | todo | [ui](spec/ui.md) |
+| T17 | 移除 IMGUI | todo | [ui](spec/ui.md) |
+| T18 | 伺服器骨架 | todo | [server](spec/server.md) |
+| T19 | 帳號與登入（訪客、Apple） | todo | [server](spec/server.md) |
+| T20 | WebSocket 閘道與在線狀態 | todo | [server](spec/server.md) |
+| T21 | 玩家資料與雲端存檔 | todo | [server](spec/server.md) |
+| T22 | 對戰房間 | todo | [server](spec/server.md) |
+| T23 | 配對、排位分、段位、排行榜 | todo | [server](spec/server.md) |
+| T24 | 好友系統 | todo | [server](spec/server.md) |
+| T25 | 私訊聊天與過濾 | todo | [server](spec/server.md) |
+| T26 | 每日任務與簽到 | todo | [server](spec/server.md) |
+| T27 | 經濟、商店、收據驗證 | todo | [server](spec/server.md) |
+| T28 | 讚美對手與檢舉 | todo | [server](spec/server.md) |
+| T29 | 部署、維運、強制更新 | todo | [server](spec/server.md) |
+| T30 | 客戶端網路層 | todo | [online](spec/online.md) |
+| T31 | 登入流程與帳號畫面 | todo | [online](spec/online.md) |
+| T32 | 線上對戰客戶端 | todo | [online](spec/online.md) |
+| T33 | 配對與排位畫面、排行榜 | todo | [online](spec/online.md) |
+| T34 | 對戰中表情與快捷語 | todo | [online](spec/online.md) |
+| T35 | 讚美對手與玩家名片 | todo | [online](spec/online.md) |
+| T36 | 好友畫面 | todo | [online](spec/online.md) |
+| T37 | 聊天畫面 | todo | [online](spec/online.md) |
+| T38 | 每日任務畫面 | todo | [online](spec/online.md) |
+| T39 | 推播通知 | todo | [online](spec/online.md) |
+| T40 | 外觀系統與背包 | todo | [monetization](spec/monetization.md) |
+| T41 | 商城與內購 | todo | [monetization](spec/monetization.md) |
+| T42 | 獎勵廣告與 ATT | todo | [monetization](spec/monetization.md) |
+| T43 | 隱私、合規、法律頁面 | todo | [release](spec/release.md) |
+| T44 | 當機回報與分析事件 | todo | [release](spec/release.md) |
+| T45 | 正式音效 | todo | [release](spec/release.md) |
+| T46 | 正式角色模型與動畫 | todo | [release](spec/release.md) |
+| T47 | 商店素材 | todo | [release](spec/release.md) |
+| T48 | TestFlight 與實機 QA | todo | [release](spec/release.md) |
 
-### 3.2 體感操作（本作賣點）
-
-| # | 功能 | 優先度 | 說明 |
-|---|---|---|---|
-| M1 | 讀取陀螺儀、加速度計、姿態感測器 | P0 | ✅ v0.6（待手機實測） |
-| M2 | 按住螢幕＝握球，放開＝出手 | P0 | ✅ v0.6 |
-| M3 | 揮臂速度 → 球速 | P0 | ✅ v0.6 出手時轉速 ÷ 校正基準 × 8.5 m/s，限制在 3.5～11 m/s |
-| M4 | 手機偏轉 → 出手方向 | P0 | ✅ v0.6 前揮時繞「上方」的轉動量 × 0.08，最多 ±2.5° |
-| M5 | 手腕翻轉 → 旋轉／曲球 | P1 | ✅ v0.6 |
-| M6 | 揮臂動作判定 | P1 | ✅ v0.6 要有後擺，前揮要掃過約 40° |
-| M7 | 校正／試揮 | P1 | ✅ v0.6 設定 → 揮臂校正 |
-| M8 | 雜訊過濾 | P1 | ✅ 出手數值取最後 0.12 秒的平均／峰值，不用單一樣本 |
-| M9 | 安全提醒 | P0 | ✅ v0.6 第一次用體感開始前顯示 |
-| M10 | 操作模式切換 | P0 | ✅ v0.6 沒有陀螺儀時自動改用滑動 |
-| M11 | 震動回饋 | P2 | ✅ v0.6 出手、全倒、過關 |
-| M12 | 出手數據畫面 | P1 | ✅ 球速、角度、曲球方向，以及跟上一球的球速差（v0.7） |
-
-### 3.3 遊戲模式
-
-| # | 功能 | 優先度 | 說明 |
-|---|---|---|---|
-| R1 | 標準 10 局 | P0 | ✅ v0.2 計分和結算畫面都完成 |
-| R2 | 練習模式 | P1 | ✅ v0.6 9 種組合 |
-| R3 | 挑戰關卡 | P1 | ✅ v0.6 15 關 |
-| R4 | 本機多人（輪流） | P1 | ✅ v0.6 |
-| R5 | 線上對戰 | P3 | 非同步對戰：各自投完一場再比較分數 |
-
-### 3.4 關卡元素（挑戰模式用）
-
-| # | 功能 | 優先度 | 說明 |
-|---|---|---|---|
-| L1 | 坡道、隆起 | P1 | ✅ v0.6 小丘 |
-| L2 | 移動障礙 | P1 | ✅ v0.6 |
-| L3 | 特殊球 | P2 | ✅ v0.7 炸彈球、超重球（分裂球沒做） |
-| L4 | 特殊球瓶排列 | P2 | ✅ 殘瓶排列、金色目標球瓶、重球瓶、左右移動的整排球瓶（v0.7） |
-| L5 | 星級評分 | P1 | ✅ v0.6 |
-
-### 3.5 畫面與音效
-
-| # | 功能 | 優先度 | 說明 |
-|---|---|---|---|
-| V1 | 正式 UI | P0 | 部分完成：完整選單和中文介面都有了，但還是 IMGUI＋系統字型；上架前建議換成 UI Toolkit＋內建 Noto Sans TC |
-| V2 | 中英文切換 | P1 | ✅ v0.6（自己寫的字串表 `Loc.cs`） |
-| V3 | 球瓶、球、角色的正式模型 | P1 | 球瓶 ✅ v0.2.5；角色目前用幾何形狀組成，之後可以換成正式模型和動畫 |
-| V4 | 保齡球館場景 | P2 | ✅ v0.2.5 霓虹場館；還缺記分螢幕 |
-| V5 | 音效 | P0 | ✅ v0.2 合成音效（之後換成真實錄音） |
-| V6 | 特效 | P2 | ✅ v0.2.5 火花、鏡頭震動、全場閃燈、拖尾 |
-| V7 | 甲蟲主題外觀 | P3 | 甲蟲球、昆蟲球瓶、森林球道 |
-
-### 3.6 系統
-
-| # | 功能 | 優先度 | 說明 |
-|---|---|---|---|
-| S1 | 主選單 | P0 | ✅ v0.6 |
-| S2 | 設定 | P0 | ✅ v0.6 |
-| S3 | 存檔 | P1 | ✅ v0.6（PlayerPrefs） |
-| S4 | 統計 | P2 | ✅ v0.6 |
-| S5 | 成就 | P3 | Game Center／Google Play 成就 |
-| S6 | 排行榜 | P3 | Game Center／Google Play 排行榜 |
-
----
-
-## 4. 開發里程碑
-
-> v0.6 一次完成了原本 v0.3～v0.6 的程式部分。還沒完成的是**實機驗證**：體感手感要在 iPhone／Android 上調整，Android 上也要確認流暢度和中文字型。
-
-| 版本 | 目標 | 包含功能 | 完成的判斷標準 |
-|---|---|---|---|
-| **v0.2 好玩的滑動版** | 用滑鼠或觸控玩起來要順手 | G1、G2、G3、V5、R1 結算畫面 | 朋友第一次玩就能打到球瓶，而且會想再玩一場 |
-| **v0.3 體感原型** | iPhone 揮臂可以投球 | M1～M4、M9、M10 | 用 Unity Remote 連接 iPhone，揮臂投出的球速、方向都合理 |
-| **v0.4 體感完整版** | 手感是賣點 | M5～M8、M12、G4 | 只甩手腕投不好，完整揮臂才投得好；可以投出曲球 |
-| **v0.5 可以給人玩** | 第一次讓外人試玩 | V1、V2、S1、S2、R2、R4 | 中文介面、有主選單，在 Android 實機上跑得順 |
-| **v0.6 內容** | 有東西可以玩很久 | R3、L1、L2、L5、S3、V3 | 至少 15 個挑戰關卡 |
-| **v1.0 上架** | 上架 App Store、Google Play | V4、V6、M11、S4、隱私權政策、商店素材 | 通過商店審核 |
-
----
-
-## 5. 技術備註
-
-**體感判定流程（M2～M6）**
-
-```
-拇指按下 → 開始記錄（約 60～100 Hz）
-   ↓
-往後拉：陀螺儀的俯仰角速度為負 → 記為「後擺」
-   ↓
-往前揮：俯仰角速度轉正並增加 → 記為「前揮」
-   ↓
-拇指放開 → 檢查有沒有「後擺 → 前揮」
-   ├─ 有：球速 = 出手瞬間的角速度 × 個人校正係數
-   │      方向 = 出手時的偏轉角 − 開始時的偏轉角
-   │      旋轉 = 出手前後 0.2 秒手腕的平均旋轉角速度
-   └─ 沒有：提示「請做完整的揮臂動作」
-```
-
-**要注意的地方**
-- iOS 的 `Gyroscope` 要先 `InputSystem.EnableDevice()` 才會有數值。
-- Unity Editor 讀不到手機的感測器，測試要用 **Unity Remote 5**（iPhone 接 USB，Windows 要先裝 iTunes），或是直接建置到 Android 手機上。
-- 要輸出 iOS 版，需要 Mac 或 Unity Build Automation。Android 版可以直接從 Windows 輸出。
-- 目前還沒有安裝 Android／iOS Build Support 模組，要在手機上測試體感前補裝。
-
-**程式架構**
-- `BowlingGame`：模式、回合、排瓶、投球流程、鏡頭。滑動和體感最後都呼叫同一個 `StartThrow(speed, angle, hook)`，所以計分、物理、鏡頭不用分兩套。
-- `BowlingUI`：所有畫面，只讀 `BowlingGame` 的狀態、呼叫它的公開方法。
-- `SwingDetector` 是純 C#，可以用模擬資料測試（Bowling → Swing Check）。
-- 場景由 `BowlingSceneBuilder` 產生，`SceneVersion` 變了就會自動重建。
-
----
-
-## 6. 待決定的問題
-
-1. ~~**主題**~~：✅ 已決定走霓虹夜光風格（2026-10-15）。甲蟲主題（V7）可以之後當成另一套外觀。
-2. **收費方式**：買斷、免費加廣告，還是免費加內購（例如球的外觀）？
-3. **第一個上架平台**：先上 Android（不需要 Mac），還是 iOS（陀螺儀品質比較一致）？
-4. ~~**左右手**~~：✅ 設定裡可選慣用手，左手時角色鏡像、旋轉方向反過來。
-5. **是否支援 Apple Watch** 當控制器？（Bowling Central 做過，但比較複雜）
+### 待決定
+1. 伺服器主機：Fly.io／Render／自己的 VPS（T29 預設 Fly.io）
+2. 商品價格與首發外觀數量（T27、T40 先用假資料）
+3. 排位段位名稱與賽季長度（T23 預設 6 段、每季 8 週）

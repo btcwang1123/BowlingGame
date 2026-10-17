@@ -1,0 +1,18 @@
+{
+    "name": "Bowling.Gameplay",
+    "rootNamespace": "",
+    "references": [
+        "Bowling.Core",
+        "Unity.InputSystem",
+        "Bowling.Meta"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

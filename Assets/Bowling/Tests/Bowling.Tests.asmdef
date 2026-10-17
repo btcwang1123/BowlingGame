@@ -1,0 +1,26 @@
+{
+    "name": "Bowling.Tests",
+    "rootNamespace": "",
+    "references": [
+        "Bowling.Core",
+        "Bowling.Gameplay",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "Bowling.Meta"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
