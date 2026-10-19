@@ -36,6 +36,9 @@ public static class Loc
         }
     }
 
+    // Tell listeners the language may have changed (e.g. after Settings rolled back unsaved edits).
+    public static void NotifyLanguageChanged() => LanguageChanged?.Invoke();
+
     public static string T(string key)
     {
         var table = Language == "zh" ? ZhTable : EnTable;

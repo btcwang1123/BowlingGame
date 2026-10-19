@@ -20,7 +20,7 @@ public class BowlingAutoplay : MonoBehaviour
     int shots, menuShot;
     BowlingUI ui;
     static readonly int[] ShotLevels = { 6, 16, 18 }; // moving wall, bomb ball, final challenge
-    static readonly string[] MenuScreens = { "Home", "Players", "Practice", "Challenges", "Settings", "Stats" };
+    static readonly string[] MenuScreens = { "Home", "Players", "Practice", "Challenges", "Settings", "Stats", "Shop", "Venues", "Calibrate" };
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void Install()
@@ -113,6 +113,7 @@ public class BowlingAutoplay : MonoBehaviour
             case Stage.Done: return;
         }
 
+        if (game.WaitingForTap) { game.Continue(); return; }
         if (!game.CanThrow) return;
         if (stage == Stage.Practice) practiceBalls++;
         // A mix of good and wild throws, with some hook.

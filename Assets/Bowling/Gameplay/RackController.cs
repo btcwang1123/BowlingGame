@@ -22,6 +22,9 @@ public class RackController
         Rack(ChallengeLevel.Rack(numbers), new int[0]);
     }
 
+    // Exactly these pins up (a game continued mid-frame).
+    public void RackStanding(bool[] standing) => Rack(standing, new int[0]);
+
     public void RackChallenge(ChallengeLevel challenge) => Rack(challenge.pins, challenge.targets, challenge.heavyPins);
 
     void Rack(bool[] present, int[] targets, bool heavy = false)

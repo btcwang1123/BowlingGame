@@ -122,7 +122,7 @@
     },
     {
       "key": "no_backswing",
-      "value": "Swing back first, then forward"
+      "value": "No backswing seen: after OK, swing your arm back first, then forward"
     },
     {
       "key": "throw_info",
@@ -375,6 +375,1242 @@
     {
       "key": "understood",
       "value": "Got it"
+    },
+    {
+      "key": "motion_ready_prompt",
+      "value": "Drag to pick your spot, bring the phone up to your chest, then press OK"
+    },
+    {
+      "key": "motion_ready_ok",
+      "value": "OK, I'm ready"
+    },
+    {
+      "key": "motion_swing_back",
+      "value": "Swing back"
+    },
+    {
+      "key": "motion_swinging_back",
+      "value": "Swinging back…"
+    },
+    {
+      "key": "motion_swing_now",
+      "value": "Swing forward!"
+    },
+    {
+      "key": "cancel",
+      "value": "Cancel"
+    },
+    {
+      "key": "aim_offset",
+      "value": "Aim trim"
+    },
+    {
+      "key": "aim_offset_hint",
+      "value": "Ball drifting right? Trim left. Drifting left? Trim right — it cancels out your bowling-hand bias."
+    },
+    {
+      "key": "trim_left",
+      "value": "left"
+    },
+    {
+      "key": "trim_right",
+      "value": "right"
+    },
+    {
+      "key": "trim_none",
+      "value": "centred"
+    },
+    {
+      "key": "tutorial",
+      "value": "Tutorial"
+    },
+    {
+      "key": "tutorial_skip",
+      "value": "Skip tutorial"
+    },
+    {
+      "key": "tutorial_next",
+      "value": "Next"
+    },
+    {
+      "key": "tutorial_welcome_title",
+      "value": "Welcome to STRIKE SWING"
+    },
+    {
+      "key": "tutorial_welcome",
+      "value": "The goal is simple: knock down all 10 pins!\nString strikes together for a big score. Let's bowl one together."
+    },
+    {
+      "key": "tutorial_controls_motion",
+      "value": "Motion play:\n1. Drag left/right to pick your spot\n2. Hold the phone like a ball at your chest\n3. Press OK → swing back → swing forward hard\nThe ball releases automatically at the bottom of the swing!"
+    },
+    {
+      "key": "tutorial_controls_swipe",
+      "value": "Swipe play:\n1. Drag left/right to pick your spot\n2. Flick up quickly to bowl\n3. Curve the flick to hook the ball"
+    },
+    {
+      "key": "tutorial_try",
+      "value": "Your turn!\nBowl your very first ball now."
+    },
+    {
+      "key": "tutorial_try_go",
+      "value": "Try it"
+    },
+    {
+      "key": "tutorial_banner_motion",
+      "value": "Aim → press OK → swing back → swing forward"
+    },
+    {
+      "key": "tutorial_banner_swipe",
+      "value": "Aim → flick up quickly to bowl"
+    },
+    {
+      "key": "tutorial_done_title",
+      "value": "You've got it!"
+    },
+    {
+      "key": "tutorial_done",
+      "value": "Nice one! You can replay this anytime from Settings.\nNow go enjoy some bowling!"
+    },
+    {
+      "key": "tutorial_finish",
+      "value": "Done"
+    },
+    {
+      "key": "analysis_title",
+      "value": "Throw analysis"
+    },
+    {
+      "key": "an_speed",
+      "value": "Speed"
+    },
+    {
+      "key": "an_vs_last",
+      "value": "vs last"
+    },
+    {
+      "key": "an_avg",
+      "value": "avg"
+    },
+    {
+      "key": "an_angle",
+      "value": "Angle"
+    },
+    {
+      "key": "an_left",
+      "value": "left"
+    },
+    {
+      "key": "an_right",
+      "value": "right"
+    },
+    {
+      "key": "an_spin",
+      "value": "Spin"
+    },
+    {
+      "key": "an_entry",
+      "value": "Entry"
+    },
+    {
+      "key": "an_gutter",
+      "value": "Gutter"
+    },
+    {
+      "key": "an_pocket",
+      "value": "Pocket ✓ on target"
+    },
+    {
+      "key": "an_off_left",
+      "value": "{0:0} cm left"
+    },
+    {
+      "key": "an_off_right",
+      "value": "{0:0} cm right"
+    },
+    {
+      "key": "an_entry_angle",
+      "value": "Entry angle"
+    },
+    {
+      "key": "an_ball",
+      "value": "Ball"
+    },
+    {
+      "key": "an_wiped",
+      "value": "Wiped ✓"
+    },
+    {
+      "key": "an_oil",
+      "value": "Oil {0}%"
+    },
+    {
+      "key": "an_result",
+      "value": "Result"
+    },
+    {
+      "key": "an_pins",
+      "value": "{0} / {1} pins"
+    },
+    {
+      "key": "shape_straight",
+      "value": "Straight"
+    },
+    {
+      "key": "shape_left",
+      "value": "Left hook"
+    },
+    {
+      "key": "shape_right",
+      "value": "Right hook"
+    },
+    {
+      "key": "shape_strong",
+      "value": "Strong "
+    },
+    {
+      "key": "spin_level_0",
+      "value": "none"
+    },
+    {
+      "key": "spin_level_1",
+      "value": "light"
+    },
+    {
+      "key": "spin_level_2",
+      "value": "medium"
+    },
+    {
+      "key": "spin_level_3",
+      "value": "strong"
+    },
+    {
+      "key": "zoom_on",
+      "value": "Zoom ＋"
+    },
+    {
+      "key": "zoom_off",
+      "value": "‹ Back"
+    },
+    {
+      "key": "zoom_hint",
+      "value": "Zoomed in on the pins · tap to return"
+    },
+    {
+      "key": "wipe_ball",
+      "value": "Wipe ball · oil {0}%"
+    },
+    {
+      "key": "wipe_clean",
+      "value": "Wipe ball · clean"
+    },
+    {
+      "key": "wiping",
+      "value": "Wiping…"
+    },
+    {
+      "key": "wipe_done",
+      "value": "Ball wiped!"
+    },
+    {
+      "key": "coins",
+      "value": "coins"
+    },
+    {
+      "key": "shop",
+      "value": "Shop & Style"
+    },
+    {
+      "key": "shop_equipped",
+      "value": "Equipped"
+    },
+    {
+      "key": "shop_hook",
+      "value": "Hook"
+    },
+    {
+      "key": "ball_size",
+      "value": "Size"
+    },
+    {
+      "key": "shop_weight_hint",
+      "value": "Heavier hits harder but leaves the hand slower; a bigger ball covers more of the rack."
+    },
+    {
+      "key": "shop_catalogue",
+      "value": "Balls"
+    },
+    {
+      "key": "shop_in_use",
+      "value": "In use"
+    },
+    {
+      "key": "shop_equip",
+      "value": "Equip"
+    },
+    {
+      "key": "shop_price",
+      "value": "● {0}"
+    },
+    {
+      "key": "shop_confirm",
+      "value": "Buy “{0}” for {1} coins?"
+    },
+    {
+      "key": "shop_buy",
+      "value": "Buy"
+    },
+    {
+      "key": "shop_earn_hint",
+      "value": "Earn coins for every pin, strike, spare, finished game and challenge star."
+    },
+    {
+      "key": "ball_starter",
+      "value": "Rookie Purple"
+    },
+    {
+      "key": "ball_pearl",
+      "value": "Pearl White"
+    },
+    {
+      "key": "ball_polka",
+      "value": "Polka Pop"
+    },
+    {
+      "key": "ball_ocean",
+      "value": "Ocean Swirl"
+    },
+    {
+      "key": "ball_cherry",
+      "value": "Cherry Stripe"
+    },
+    {
+      "key": "ball_racer",
+      "value": "Racing Check"
+    },
+    {
+      "key": "ball_lava",
+      "value": "Lava Flame"
+    },
+    {
+      "key": "ball_toxic",
+      "value": "Toxic Two-Tone"
+    },
+    {
+      "key": "ball_galaxy",
+      "value": "Galaxy"
+    },
+    {
+      "key": "ball_legend",
+      "value": "Golden Legend"
+    },
+    {
+      "key": "cover_plastic",
+      "value": "Plastic (straight)"
+    },
+    {
+      "key": "cover_urethane",
+      "value": "Urethane"
+    },
+    {
+      "key": "cover_reactive",
+      "value": "Reactive resin"
+    },
+    {
+      "key": "ball_weight_moved",
+      "value": "Ball weight, size, look and your character are in Shop & Style."
+    },
+    {
+      "key": "venues",
+      "value": "Venues"
+    },
+    {
+      "key": "venue_current",
+      "value": "Current"
+    },
+    {
+      "key": "venue_pick",
+      "value": "Bowl here"
+    },
+    {
+      "key": "venue_neon",
+      "value": "Neon Cosmic"
+    },
+    {
+      "key": "venue_neon_desc",
+      "value": "Blacklight, neon tubes and stars: cosmic bowling night."
+    },
+    {
+      "key": "venue_classic",
+      "value": "Classic Lanes"
+    },
+    {
+      "key": "venue_classic_desc",
+      "value": "Bright maple lanes and warm lights: your neighbourhood alley."
+    },
+    {
+      "key": "venue_retro",
+      "value": "50s Diner"
+    },
+    {
+      "key": "venue_retro_desc",
+      "value": "Cherry-wood lanes, red and mint neon, confetti."
+    },
+    {
+      "key": "venue_ocean",
+      "value": "Deep Sea"
+    },
+    {
+      "key": "venue_ocean_desc",
+      "value": "Teal underwater light with bubbles drifting up."
+    },
+    {
+      "key": "venue_volcano",
+      "value": "Volcano"
+    },
+    {
+      "key": "venue_volcano_desc",
+      "value": "Black basalt lane, lava glow and drifting embers."
+    },
+    {
+      "key": "venue_ice",
+      "value": "Ice Palace"
+    },
+    {
+      "key": "venue_ice_desc",
+      "value": "A glassy ice-blue lane under falling snow."
+    },
+    {
+      "key": "venue_sakura",
+      "value": "Sakura Garden"
+    },
+    {
+      "key": "venue_sakura_desc",
+      "value": "Light wood at dusk, pink light and falling petals."
+    },
+    {
+      "key": "venue_space",
+      "value": "Space Station"
+    },
+    {
+      "key": "venue_space_desc",
+      "value": "A mirror-black lane and light strips in a sea of stars."
+    },
+    {
+      "key": "calib_intro",
+      "value": "Calibration takes you onto the lane to throw 6 balls: 2 straight, 2 left hooks, 2 right hooks.\nUse your full motion every time: ball at your chest → swing back → swing forward and release."
+    },
+    {
+      "key": "calib_measures",
+      "value": "It measures your arm swing, acceleration, release speed and wrist roll, and learns how your straight ball differs from your hooks, so the ball follows your motion."
+    },
+    {
+      "key": "calib_current",
+      "value": "Current profile"
+    },
+    {
+      "key": "calib_profile",
+      "value": "Release speed {0:0} °/s · swing {1:0}°\nPeak acceleration {2:0} °/s² · spin calibrated {3}"
+    },
+    {
+      "key": "calib_start",
+      "value": "Go to the lane and calibrate"
+    },
+    {
+      "key": "calib_bar",
+      "value": "Calibration · ball {0} / {1}"
+    },
+    {
+      "key": "calib_do_straight",
+      "value": "Throw a straight ball: keep your wrist still, swing straight through"
+    },
+    {
+      "key": "calib_do_left",
+      "value": "Throw a left hook: roll your wrist left (counter-clockwise) at release"
+    },
+    {
+      "key": "calib_do_right",
+      "value": "Throw a right hook: roll your wrist right (clockwise) at release"
+    },
+    {
+      "key": "calib_ready_prompt",
+      "value": "Ball at your chest, press OK, then swing back → forward and release"
+    },
+    {
+      "key": "calib_step_ok",
+      "value": "Ball {0}/{1} done"
+    },
+    {
+      "key": "calib_done_short",
+      "value": "Calibrated!"
+    },
+    {
+      "key": "calib_report_title",
+      "value": "Calibration done"
+    },
+    {
+      "key": "cr_speed",
+      "value": "Release speed"
+    },
+    {
+      "key": "cr_amplitude",
+      "value": "Arm swing (back / forward)"
+    },
+    {
+      "key": "cr_amplitude_value",
+      "value": "{0:0}° / {1:0}°"
+    },
+    {
+      "key": "cr_accel",
+      "value": "Peak acceleration"
+    },
+    {
+      "key": "cr_consistency",
+      "value": "Straight-ball consistency"
+    },
+    {
+      "key": "cr_aim",
+      "value": "Straight-ball aim fix"
+    },
+    {
+      "key": "cr_left",
+      "value": "Left-hook wrist roll"
+    },
+    {
+      "key": "cr_right",
+      "value": "Right-hook wrist roll"
+    },
+    {
+      "key": "cr_spin_ok",
+      "value": "✓ Learned your straight, left and right hook. Your wrist now steers the ball."
+    },
+    {
+      "key": "cr_spin_unclear",
+      "value": "Your left and right hooks felt too alike, so spin stays as it was. Try again with a clearer wrist roll."
+    },
+    {
+      "key": "calib_finish",
+      "value": "Done"
+    },
+    {
+      "key": "calib_again",
+      "value": "Calibrate again"
+    },
+    {
+      "key": "chart_running",
+      "value": "Running score"
+    },
+    {
+      "key": "chart_frames",
+      "value": "Pins per frame"
+    },
+    {
+      "key": "chart_outcomes",
+      "value": "Frame results"
+    },
+    {
+      "key": "chart_speed",
+      "value": "Ball speed"
+    },
+    {
+      "key": "chart_accuracy",
+      "value": "Entry points (first balls)"
+    },
+    {
+      "key": "chart_records",
+      "value": "Against your records"
+    },
+    {
+      "key": "chart_recent",
+      "value": "Recent games"
+    },
+    {
+      "key": "chart_lifetime",
+      "value": "All-time throws"
+    },
+    {
+      "key": "chart_no_games",
+      "value": "No finished games yet"
+    },
+    {
+      "key": "legend_this_game",
+      "value": "This game"
+    },
+    {
+      "key": "legend_avg_pace",
+      "value": "Average pace"
+    },
+    {
+      "key": "legend_best_pace",
+      "value": "Best pace"
+    },
+    {
+      "key": "legend_ball1",
+      "value": "Ball 1"
+    },
+    {
+      "key": "legend_ball2",
+      "value": "Ball 2"
+    },
+    {
+      "key": "legend_ball3",
+      "value": "Ball 3"
+    },
+    {
+      "key": "legend_avg",
+      "value": "Avg"
+    },
+    {
+      "key": "legend_top",
+      "value": "Top"
+    },
+    {
+      "key": "legend_score",
+      "value": "Score"
+    },
+    {
+      "key": "legend_best",
+      "value": "Best"
+    },
+    {
+      "key": "out_strike",
+      "value": "Strike"
+    },
+    {
+      "key": "out_spare",
+      "value": "Spare"
+    },
+    {
+      "key": "out_open",
+      "value": "Open"
+    },
+    {
+      "key": "out_other",
+      "value": "Other"
+    },
+    {
+      "key": "out_gutter",
+      "value": "Gutter"
+    },
+    {
+      "key": "acc_pocket_rate",
+      "value": "Pocket hits this game"
+    },
+    {
+      "key": "acc_lifetime",
+      "value": "All-time pocket rate {0:0}%"
+    },
+    {
+      "key": "acc_mean_miss",
+      "value": "Average miss {0:0.0} cm {1}"
+    },
+    {
+      "key": "rec_this_game",
+      "value": "This game"
+    },
+    {
+      "key": "rec_average",
+      "value": "Average"
+    },
+    {
+      "key": "rec_best",
+      "value": "Best"
+    },
+    {
+      "key": "rec_strike_rate",
+      "value": "Strike rate: this game {0:0}% · all-time {1:0}%"
+    },
+    {
+      "key": "rec_above_avg",
+      "value": "{0:0} above your average ▲"
+    },
+    {
+      "key": "rec_below_avg",
+      "value": "{0:0} below your average ▼"
+    },
+    {
+      "key": "tap_to_continue",
+      "value": "Tap the screen to continue ▶"
+    },
+    {
+      "key": "save",
+      "value": "Save"
+    },
+    {
+      "key": "saved",
+      "value": "✓ Saved"
+    },
+    {
+      "key": "unsaved_title",
+      "value": "Unsaved changes"
+    },
+    {
+      "key": "unsaved_text",
+      "value": "You changed some settings. Save them before leaving?"
+    },
+    {
+      "key": "save_and_leave",
+      "value": "Save and leave"
+    },
+    {
+      "key": "discard_changes",
+      "value": "Don't save"
+    },
+    {
+      "key": "keep_editing",
+      "value": "Keep editing"
+    },
+    {
+      "key": "audio_section",
+      "value": "Sound & music"
+    },
+    {
+      "key": "sound_pack",
+      "value": "Sound effects (tap to preview)"
+    },
+    {
+      "key": "pack_alley",
+      "value": "Real alley"
+    },
+    {
+      "key": "pack_neon",
+      "value": "Neon synth"
+    },
+    {
+      "key": "pack_arcade",
+      "value": "8-bit arcade"
+    },
+    {
+      "key": "pack_cartoon",
+      "value": "Cartoon"
+    },
+    {
+      "key": "pack_alley_desc",
+      "value": "Crisp maple pins, and the crowd cheers your strikes."
+    },
+    {
+      "key": "pack_neon_desc",
+      "value": "Glassy bells and synth pads with a big reverb."
+    },
+    {
+      "key": "pack_arcade_desc",
+      "value": "Square-wave blips and victory jingles, like an old cabinet."
+    },
+    {
+      "key": "pack_cartoon_desc",
+      "value": "Wood blocks, marimba, slide whistles — and a sad trombone for gutters."
+    },
+    {
+      "key": "music",
+      "value": "Background music"
+    },
+    {
+      "key": "music_off",
+      "value": "Music off"
+    },
+    {
+      "key": "music_auto",
+      "value": "Match the venue"
+    },
+    {
+      "key": "music_auto_now",
+      "value": "{0} plays: {1}"
+    },
+    {
+      "key": "music_now",
+      "value": "Now playing: {0}"
+    },
+    {
+      "key": "music_volume",
+      "value": "Music volume"
+    },
+    {
+      "key": "music_lounge",
+      "value": "Jazz lounge"
+    },
+    {
+      "key": "music_disco",
+      "value": "Disco funk"
+    },
+    {
+      "key": "music_synthwave",
+      "value": "Synthwave"
+    },
+    {
+      "key": "music_rockabilly",
+      "value": "50s rockabilly"
+    },
+    {
+      "key": "music_aquatic",
+      "value": "Deep-sea ambient"
+    },
+    {
+      "key": "music_rock",
+      "value": "Arena rock"
+    },
+    {
+      "key": "music_lofi",
+      "value": "Lo-fi chill"
+    },
+    {
+      "key": "music_zen",
+      "value": "Zen garden"
+    },
+    {
+      "key": "music_cosmic",
+      "value": "Cosmic drift"
+    },
+    {
+      "key": "shop_tab_balls",
+      "value": "Balls"
+    },
+    {
+      "key": "shop_tab_characters",
+      "value": "Characters"
+    },
+    {
+      "key": "shop_wear",
+      "value": "Wear"
+    },
+    {
+      "key": "shop_char_hint",
+      "value": "Pick a look! Characters only change how you look, not how you bowl."
+    },
+    {
+      "key": "shop_compare_hint",
+      "value": "White line = your ball"
+    },
+    {
+      "key": "stat_hook",
+      "value": "Hook"
+    },
+    {
+      "key": "stat_length",
+      "value": "Length"
+    },
+    {
+      "key": "stat_backend",
+      "value": "Backend"
+    },
+    {
+      "key": "stat_control",
+      "value": "Control"
+    },
+    {
+      "key": "cover_pearl",
+      "value": "Pearl reactive"
+    },
+    {
+      "key": "cover_hybrid",
+      "value": "Hybrid reactive"
+    },
+    {
+      "key": "cover_solid",
+      "value": "Solid reactive"
+    },
+    {
+      "key": "core_pancake",
+      "value": "Pancake core"
+    },
+    {
+      "key": "core_symmetric",
+      "value": "Symmetric core"
+    },
+    {
+      "key": "core_asymmetric",
+      "value": "Asymmetric core"
+    },
+    {
+      "key": "surface_polished",
+      "value": "Polished"
+    },
+    {
+      "key": "surface_matte",
+      "value": "Sanded"
+    },
+    {
+      "key": "ballfor_plastic",
+      "value": "Barely hooks — the classic straight spare ball."
+    },
+    {
+      "key": "ballfor_urethane",
+      "value": "Turns early in a smooth, easy-to-control arc. Great to learn with."
+    },
+    {
+      "key": "ballfor_pearl",
+      "value": "Skids long, then snaps hard at the back end. For drier lanes."
+    },
+    {
+      "key": "ballfor_hybrid",
+      "value": "Strong hook that stays predictable — an all-rounder."
+    },
+    {
+      "key": "ballfor_solid",
+      "value": "Grabs the lane early with a big, continuous arc. For oily lanes."
+    },
+    {
+      "key": "ball_guide_title",
+      "value": "Buying guide: what to look for"
+    },
+    {
+      "key": "ball_guide",
+      "value": "<b><color=#FF66BF>Hook</color></b>: how far the ball can curve. More hook makes it easier to hit the pocket (between pins 1 and 3) at a good angle for strikes, but it is harder to control.\n<b><color=#4DD9FF>Length</color></b>: how far the ball skids before it starts to turn. Long balls turn late; short balls turn early.\n<b><color=#FFBF40>Backend</color></b>: how sharply it turns at the end. A strong backend enters the pins at a steeper angle and carries more pins; a weak one rolls a smooth arc.\n<b><color=#73FF8C>Control</color></b>: how predictable the ball stays once it picks up lane oil. High control shrugs off oil (and remember to wipe your ball!).\n<b>Coverstock</b>: plastic (spare ball) → urethane (steady) → pearl / hybrid / solid reactive (most hook).\n<b>Core</b>: asymmetric cores flare more and react harder; symmetric cores are smoother.\n<b>Surface</b>: polished skids longer and snaps; sanded grabs early and arcs smoothly.\n<b>Weight</b>: heavier balls hit harder and scatter pins more, but leave the hand a little slower. About 10% of body weight, up to 16 lb, is the usual advice."
+    },
+    {
+      "key": "ball_candy",
+      "value": "Candy Rainbow"
+    },
+    {
+      "key": "ball_sweetheart",
+      "value": "Sweetheart"
+    },
+    {
+      "key": "ball_pixel",
+      "value": "Pixel Arcade"
+    },
+    {
+      "key": "ball_zebra",
+      "value": "Zebra"
+    },
+    {
+      "key": "ball_camo",
+      "value": "Camo"
+    },
+    {
+      "key": "ball_sunset",
+      "value": "Sunset"
+    },
+    {
+      "key": "ball_glitter",
+      "value": "Glitter Gold"
+    },
+    {
+      "key": "ball_tiedye",
+      "value": "Tie-Dye"
+    },
+    {
+      "key": "ball_leopard",
+      "value": "Leopard"
+    },
+    {
+      "key": "ball_starlight",
+      "value": "Starlight"
+    },
+    {
+      "key": "ball_marble",
+      "value": "Marble"
+    },
+    {
+      "key": "ball_honeycomb",
+      "value": "Honeycomb"
+    },
+    {
+      "key": "ball_thunder",
+      "value": "Thunderbolt"
+    },
+    {
+      "key": "ball_carbon",
+      "value": "Carbon Fibre"
+    },
+    {
+      "key": "outfit_neon",
+      "value": "Neon Rider"
+    },
+    {
+      "key": "outfit_neon_desc",
+      "value": "The signature neon helmet and suit."
+    },
+    {
+      "key": "outfit_classic",
+      "value": "Classic Bowler"
+    },
+    {
+      "key": "outfit_classic_desc",
+      "value": "A red bowling shirt — a regular at the lanes."
+    },
+    {
+      "key": "outfit_sporty",
+      "value": "Sporty"
+    },
+    {
+      "key": "outfit_sporty_desc",
+      "value": "Ball cap and track pants, ready to roll."
+    },
+    {
+      "key": "outfit_retro",
+      "value": "50s Greaser"
+    },
+    {
+      "key": "outfit_retro_desc",
+      "value": "Pompadour, mint shirt and cuffed jeans."
+    },
+    {
+      "key": "outfit_kitty",
+      "value": "Kitty"
+    },
+    {
+      "key": "outfit_kitty_desc",
+      "value": "A pink hoodie with cute cat ears."
+    },
+    {
+      "key": "outfit_ninja",
+      "value": "Ninja"
+    },
+    {
+      "key": "outfit_ninja_desc",
+      "value": "Silent, swift, strike."
+    },
+    {
+      "key": "outfit_astronaut",
+      "value": "Astronaut"
+    },
+    {
+      "key": "outfit_astronaut_desc",
+      "value": "Bowls just fine in zero gravity."
+    },
+    {
+      "key": "outfit_disco",
+      "value": "Disco King"
+    },
+    {
+      "key": "outfit_disco_desc",
+      "value": "An afro, a gold shirt and shades."
+    },
+    {
+      "key": "outfit_rocker",
+      "value": "Punk Rocker"
+    },
+    {
+      "key": "outfit_rocker_desc",
+      "value": "Glowing mohawk, leather and shades."
+    },
+    {
+      "key": "outfit_robot",
+      "value": "Robot"
+    },
+    {
+      "key": "outfit_robot_desc",
+      "value": "Calculates every angle to the decimal."
+    },
+    {
+      "key": "outfit_king",
+      "value": "Lane King"
+    },
+    {
+      "key": "outfit_king_desc",
+      "value": "Wear the crown, rule the lanes."
+    },
+    {
+      "key": "text_size",
+      "value": "Text size"
+    },
+    {
+      "key": "text_size_sample",
+      "value": "Sample text: Strike!"
+    },
+    {
+      "key": "motion_timeout",
+      "value": "No forward swing detected, so the throw was cancelled. Press OK when you're ready"
+    },
+    {
+      "key": "technique",
+      "value": "Style"
+    },
+    {
+      "key": "tech_onehand",
+      "value": "One-handed"
+    },
+    {
+      "key": "tech_onehand_desc",
+      "value": "Normal one-handed release: curve the flick or roll your wrist to hook. Send it out wide with a big hook for a big curve; curving toward your bowling hand is a backup ball"
+    },
+    {
+      "key": "tech_spinner",
+      "value": "Spinner"
+    },
+    {
+      "key": "tech_spinner_desc",
+      "value": "Spinner: spins like a top. Barely hooks and ignores lane oil, so it is accurate — great for spares — and it flicks pins sideways"
+    },
+    {
+      "key": "tech_twohand",
+      "value": "Two-handed"
+    },
+    {
+      "key": "tech_twohand_desc",
+      "value": "Two-handed: lots of revs — a bigger, later, sharper hook and more power into the pins. Same gesture, about 1.6× the hook, harder to control"
+    },
+    {
+      "key": "style_straight",
+      "value": "Straight"
+    },
+    {
+      "key": "style_hook",
+      "value": "Hook"
+    },
+    {
+      "key": "style_backup",
+      "value": "Backup"
+    },
+    {
+      "key": "style_bigcurve",
+      "value": "Big curve"
+    },
+    {
+      "key": "style_spinner",
+      "value": "Spinner"
+    },
+    {
+      "key": "style_twohanded",
+      "value": "Two-handed"
+    },
+    {
+      "key": "player_turn_named",
+      "value": "{0}'s turn"
+    },
+    {
+      "key": "calib_bar_named",
+      "value": "Calibration ({2}) · ball {0} / {1}"
+    },
+    {
+      "key": "venue_all",
+      "value": "All venues"
+    },
+    {
+      "key": "profile_default_name",
+      "value": "Player {0}"
+    },
+    {
+      "key": "continue_match",
+      "value": "▶ Continue saved game ({0})"
+    },
+    {
+      "key": "overwrite_title",
+      "value": "Unfinished game"
+    },
+    {
+      "key": "overwrite_text",
+      "value": "There is a game saved at {0}. Starting a new one replaces it."
+    },
+    {
+      "key": "new_match",
+      "value": "Start a new game"
+    },
+    {
+      "key": "continue_saved",
+      "value": "Continue saved game"
+    },
+    {
+      "key": "setup_title",
+      "value": "{0} players"
+    },
+    {
+      "key": "setup_hint",
+      "value": "Set each player's name, calibration, look, ball and style"
+    },
+    {
+      "key": "name_placeholder",
+      "value": "Player {0} name"
+    },
+    {
+      "key": "profile",
+      "value": "Calibration"
+    },
+    {
+      "key": "not_calibrated",
+      "value": "not calibrated"
+    },
+    {
+      "key": "calibrated",
+      "value": "calibrated"
+    },
+    {
+      "key": "setup_look",
+      "value": "Look"
+    },
+    {
+      "key": "setup_ball",
+      "value": "Ball"
+    },
+    {
+      "key": "calib_profiles",
+      "value": "Calibration profiles"
+    },
+    {
+      "key": "calib_profiles_hint",
+      "value": "Everyone swings differently. Save up to {0} profiles and pick one for each player in multiplayer. Tap one to use it."
+    },
+    {
+      "key": "profile_add",
+      "value": "+ New profile ({0}/{1})"
+    },
+    {
+      "key": "profile_name",
+      "value": "Name"
+    },
+    {
+      "key": "profile_uncalibrated",
+      "value": "This profile has not been calibrated yet"
+    },
+    {
+      "key": "profile_reset",
+      "value": "Clear calibration"
+    },
+    {
+      "key": "profile_reset_text",
+      "value": "Clear the swing calibration of \"{0}\"? Its name and hand are kept."
+    },
+    {
+      "key": "profile_delete",
+      "value": "Delete profile"
+    },
+    {
+      "key": "profile_delete_text",
+      "value": "Delete \"{0}\"? This can't be undone."
+    },
+    {
+      "key": "calib_how",
+      "value": "How calibration works"
+    },
+    {
+      "key": "restart_confirm_title",
+      "value": "Restart?"
+    },
+    {
+      "key": "restart_confirm_game",
+      "value": "The scores so far are cleared and the game starts again from frame 1."
+    },
+    {
+      "key": "restart_confirm_text",
+      "value": "Your progress here is cleared and it starts over."
+    },
+    {
+      "key": "leave_confirm_title",
+      "value": "Back to the menu?"
+    },
+    {
+      "key": "leave_confirm_game",
+      "value": "Save this game and pick it up later with \"Continue saved game\" on the menu."
+    },
+    {
+      "key": "leave_confirm_text",
+      "value": "Your progress here won't be kept."
+    },
+    {
+      "key": "save_and_quit",
+      "value": "Save and leave"
+    },
+    {
+      "key": "quit_no_save",
+      "value": "Leave without saving"
+    },
+    {
+      "key": "settings_profile_note",
+      "value": "Hand, sensitivity and aim trim are saved in the profile \"{0}\""
+    },
+    {
+      "key": "profile_button",
+      "value": "Profile: {0} ({1})"
     }
   ]
 }

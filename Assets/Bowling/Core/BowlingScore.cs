@@ -8,6 +8,7 @@ public class BowlingScore
     public const int Frames = 10;
 
     readonly List<int> rolls = new();
+    readonly List<int> standings = new();
     readonly List<string>[] marks = new List<string>[Frames];
     bool rackIsFresh;
 
@@ -20,6 +21,7 @@ public class BowlingScore
     public void Reset()
     {
         rolls.Clear();
+        standings.Clear();
         for (int i = 0; i < Frames; i++) marks[i] = new List<string>();
         Frame = 0;
         RollInFrame = 0;
@@ -28,6 +30,20 @@ public class BowlingScore
     }
 
     public IReadOnlyList<string> MarksFor(int frame) => marks[frame];
+
+    // Every roll so far (pins knocked) and how many pins were standing for it: enough to rebuild
+    // the scorecard exactly with FromHistory, for saving a game part-way through.
+    public IReadOnlyList<int> Rolls => rolls;
+    public IReadOnlyList<int> StandingBefore => standings;
+
+    public static BowlingScore FromHistory(IReadOnlyList<int> knocked, IReadOnlyList<int> standingBefore)
+    {
+        var score = new BowlingScore();
+        if (knocked == null || standingBefore == null) return score;
+        int n = System.Math.Min(knocked.Count, standingBefore.Count);
+        for (int i = 0; i < n && !score.IsGameOver; i++) score.AddRoll(knocked[i], standingBefore[i], out _);
+        return score;
+    }
 
     // Mark of the most recent roll: "X", "/", "-" or a digit.
     public string LastMark { get; private set; } = "";
@@ -42,6 +58,7 @@ public class BowlingScore
     public bool AddRoll(int knocked, int standingBefore, out bool needsFreshRack)
     {
         rolls.Add(knocked);
+        standings.Add(standingBefore);
         bool cleared = knocked == standingBefore;
         // A strike is clearing a freshly set rack in one ball; clearing what's left is a spare
         // (even 0 then 10 is a spare).

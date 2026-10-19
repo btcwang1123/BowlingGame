@@ -122,7 +122,7 @@
     },
     {
       "key": "no_backswing",
-      "value": "要先往後擺，再往前揮"
+      "value": "沒抓到後擺：按 OK 後先把手臂往後擺，再往前揮"
     },
     {
       "key": "throw_info",
@@ -375,6 +375,1242 @@
     {
       "key": "understood",
       "value": "我知道了"
+    },
+    {
+      "key": "motion_ready_prompt",
+      "value": "左右拖曳選好站位，把手機當球舉到胸口，準備好就按 OK"
+    },
+    {
+      "key": "motion_ready_ok",
+      "value": "OK，開始揮臂"
+    },
+    {
+      "key": "motion_swing_back",
+      "value": "先往後擺"
+    },
+    {
+      "key": "motion_swinging_back",
+      "value": "往後擺…"
+    },
+    {
+      "key": "motion_swing_now",
+      "value": "往前揮！"
+    },
+    {
+      "key": "cancel",
+      "value": "取消"
+    },
+    {
+      "key": "aim_offset",
+      "value": "左右偏移微調"
+    },
+    {
+      "key": "aim_offset_hint",
+      "value": "球一直偏右就往左調、偏左就往右調，幫你修正慣用手的偏向。"
+    },
+    {
+      "key": "trim_left",
+      "value": "往左"
+    },
+    {
+      "key": "trim_right",
+      "value": "往右"
+    },
+    {
+      "key": "trim_none",
+      "value": "置中"
+    },
+    {
+      "key": "tutorial",
+      "value": "新手教學"
+    },
+    {
+      "key": "tutorial_skip",
+      "value": "略過教學"
+    },
+    {
+      "key": "tutorial_next",
+      "value": "下一步"
+    },
+    {
+      "key": "tutorial_welcome_title",
+      "value": "歡迎來到 STRIKE SWING"
+    },
+    {
+      "key": "tutorial_welcome",
+      "value": "目標很簡單：把 10 支球瓶全部擊倒！\n連續全倒可以拿到更高分。跟著教學投一球看看吧。"
+    },
+    {
+      "key": "tutorial_controls_motion",
+      "value": "體感玩法：\n1. 左右拖曳螢幕選好站位\n2. 把手機當保齡球舉到胸口\n3. 按 OK → 往後擺 → 用力往前揮\n球會在揮到底時自動投出！"
+    },
+    {
+      "key": "tutorial_controls_swipe",
+      "value": "滑動玩法：\n1. 左右拖曳螢幕選好站位\n2. 往上快速滑動投球\n3. 滑出弧線就能打出曲球"
+    },
+    {
+      "key": "tutorial_try",
+      "value": "換你試試看！\n現在就投出你的第一球。"
+    },
+    {
+      "key": "tutorial_try_go",
+      "value": "開始試投"
+    },
+    {
+      "key": "tutorial_banner_motion",
+      "value": "左右選站位 → 按 OK → 往後擺 → 往前揮"
+    },
+    {
+      "key": "tutorial_banner_swipe",
+      "value": "左右選站位 → 往上快速滑動投球"
+    },
+    {
+      "key": "tutorial_done_title",
+      "value": "你學會了！"
+    },
+    {
+      "key": "tutorial_done",
+      "value": "做得好！隨時可以在「設定」裡再看一次教學。\n開始盡情享受保齡球吧！"
+    },
+    {
+      "key": "tutorial_finish",
+      "value": "完成"
+    },
+    {
+      "key": "analysis_title",
+      "value": "投球分析"
+    },
+    {
+      "key": "an_speed",
+      "value": "球速"
+    },
+    {
+      "key": "an_vs_last",
+      "value": "比上一球"
+    },
+    {
+      "key": "an_avg",
+      "value": "均"
+    },
+    {
+      "key": "an_angle",
+      "value": "出手角度"
+    },
+    {
+      "key": "an_left",
+      "value": "偏左"
+    },
+    {
+      "key": "an_right",
+      "value": "偏右"
+    },
+    {
+      "key": "an_spin",
+      "value": "旋轉"
+    },
+    {
+      "key": "an_entry",
+      "value": "進球點"
+    },
+    {
+      "key": "an_gutter",
+      "value": "洗溝"
+    },
+    {
+      "key": "an_pocket",
+      "value": "口袋 ✓ 正中好球帶"
+    },
+    {
+      "key": "an_off_left",
+      "value": "偏左 {0:0} cm"
+    },
+    {
+      "key": "an_off_right",
+      "value": "偏右 {0:0} cm"
+    },
+    {
+      "key": "an_entry_angle",
+      "value": "入射角"
+    },
+    {
+      "key": "an_ball",
+      "value": "球況"
+    },
+    {
+      "key": "an_wiped",
+      "value": "已擦球 ✓"
+    },
+    {
+      "key": "an_oil",
+      "value": "油量 {0}%"
+    },
+    {
+      "key": "an_result",
+      "value": "結果"
+    },
+    {
+      "key": "an_pins",
+      "value": "{0} / {1} 瓶"
+    },
+    {
+      "key": "shape_straight",
+      "value": "直球"
+    },
+    {
+      "key": "shape_left",
+      "value": "左曲球"
+    },
+    {
+      "key": "shape_right",
+      "value": "右曲球"
+    },
+    {
+      "key": "shape_strong",
+      "value": "強力"
+    },
+    {
+      "key": "spin_level_0",
+      "value": "無"
+    },
+    {
+      "key": "spin_level_1",
+      "value": "弱"
+    },
+    {
+      "key": "spin_level_2",
+      "value": "中"
+    },
+    {
+      "key": "spin_level_3",
+      "value": "強"
+    },
+    {
+      "key": "zoom_on",
+      "value": "放大鏡 ＋"
+    },
+    {
+      "key": "zoom_off",
+      "value": "‹ 返回視角"
+    },
+    {
+      "key": "zoom_hint",
+      "value": "放大鏡：看看球瓶的位置 · 點畫面返回"
+    },
+    {
+      "key": "wipe_ball",
+      "value": "擦球 · 油 {0}%"
+    },
+    {
+      "key": "wipe_clean",
+      "value": "擦球 · 很乾淨"
+    },
+    {
+      "key": "wiping",
+      "value": "擦球中…"
+    },
+    {
+      "key": "wipe_done",
+      "value": "球擦乾淨了！"
+    },
+    {
+      "key": "coins",
+      "value": "金幣"
+    },
+    {
+      "key": "shop",
+      "value": "球具店・角色"
+    },
+    {
+      "key": "shop_equipped",
+      "value": "目前使用"
+    },
+    {
+      "key": "shop_hook",
+      "value": "曲球性能"
+    },
+    {
+      "key": "ball_size",
+      "value": "尺寸"
+    },
+    {
+      "key": "shop_weight_hint",
+      "value": "重球撞擊力強但出手較慢；大顆球擊中範圍較大。"
+    },
+    {
+      "key": "shop_catalogue",
+      "value": "球款"
+    },
+    {
+      "key": "shop_in_use",
+      "value": "使用中"
+    },
+    {
+      "key": "shop_equip",
+      "value": "裝備"
+    },
+    {
+      "key": "shop_price",
+      "value": "● {0}"
+    },
+    {
+      "key": "shop_confirm",
+      "value": "要用 {1} 金幣購買「{0}」嗎？"
+    },
+    {
+      "key": "shop_buy",
+      "value": "購買"
+    },
+    {
+      "key": "shop_earn_hint",
+      "value": "打倒球瓶、全倒、補中、完成比賽和挑戰都能賺金幣。"
+    },
+    {
+      "key": "ball_starter",
+      "value": "新手紫"
+    },
+    {
+      "key": "ball_pearl",
+      "value": "珍珠白"
+    },
+    {
+      "key": "ball_polka",
+      "value": "波卡圓點"
+    },
+    {
+      "key": "ball_ocean",
+      "value": "海洋漩渦"
+    },
+    {
+      "key": "ball_cherry",
+      "value": "櫻桃條紋"
+    },
+    {
+      "key": "ball_racer",
+      "value": "賽車格紋"
+    },
+    {
+      "key": "ball_lava",
+      "value": "熔岩烈焰"
+    },
+    {
+      "key": "ball_toxic",
+      "value": "毒液雙色"
+    },
+    {
+      "key": "ball_galaxy",
+      "value": "銀河星空"
+    },
+    {
+      "key": "ball_legend",
+      "value": "黃金傳說"
+    },
+    {
+      "key": "cover_plastic",
+      "value": "塑膠（直球）"
+    },
+    {
+      "key": "cover_urethane",
+      "value": "聚氨酯"
+    },
+    {
+      "key": "cover_reactive",
+      "value": "反應性樹脂"
+    },
+    {
+      "key": "ball_weight_moved",
+      "value": "球的重量、尺寸、花色和角色造型請到「球具店・角色」設定。"
+    },
+    {
+      "key": "venues",
+      "value": "球館"
+    },
+    {
+      "key": "venue_current",
+      "value": "使用中"
+    },
+    {
+      "key": "venue_pick",
+      "value": "前往這個球館"
+    },
+    {
+      "key": "venue_neon",
+      "value": "霓虹宇宙"
+    },
+    {
+      "key": "venue_neon_desc",
+      "value": "黑光、霓虹燈管與星點，經典宇宙保齡球之夜。"
+    },
+    {
+      "key": "venue_classic",
+      "value": "經典球館"
+    },
+    {
+      "key": "venue_classic_desc",
+      "value": "明亮的楓木球道、暖色燈光，最一般的街坊保齡球館。"
+    },
+    {
+      "key": "venue_retro",
+      "value": "50年代美式"
+    },
+    {
+      "key": "venue_retro_desc",
+      "value": "櫻桃木球道、紅綠霓虹和彩帶，復古美式風格。"
+    },
+    {
+      "key": "venue_ocean",
+      "value": "深海水族館"
+    },
+    {
+      "key": "venue_ocean_desc",
+      "value": "藍綠色海底燈光，氣泡從腳邊緩緩升起。"
+    },
+    {
+      "key": "venue_volcano",
+      "value": "火山熔岩"
+    },
+    {
+      "key": "venue_volcano_desc",
+      "value": "黑色玄武岩球道，熔岩橘光與飛舞火星。"
+    },
+    {
+      "key": "venue_ice",
+      "value": "冰雪宮殿"
+    },
+    {
+      "key": "venue_ice_desc",
+      "value": "冰藍色光滑球道，雪花緩緩飄落。"
+    },
+    {
+      "key": "venue_sakura",
+      "value": "櫻花庭園"
+    },
+    {
+      "key": "venue_sakura_desc",
+      "value": "黃昏的淺色木球道，粉色燈光與櫻花花瓣。"
+    },
+    {
+      "key": "venue_space",
+      "value": "銀河太空站"
+    },
+    {
+      "key": "venue_space_desc",
+      "value": "鏡面黑球道與白色光條，四周是一片星海。"
+    },
+    {
+      "key": "calib_intro",
+      "value": "校正會帶你進入球道，請依指示投出 6 球：直球 ×2、左曲球 ×2、右曲球 ×2。\n每一球都用完整動作：球放在胸前 → 往後擺 → 往前擺出手。"
+    },
+    {
+      "key": "calib_measures",
+      "value": "遊戲會量測手臂擺幅、加速度、出手速度和手腕旋轉，學會你投直球與曲球的差別，之後球就會照著你的動作走。"
+    },
+    {
+      "key": "calib_current",
+      "value": "目前的校正資料"
+    },
+    {
+      "key": "calib_profile",
+      "value": "出手速度 {0:0} °/s · 擺幅 {1:0}°\n最大加速度 {2:0} °/s² · 旋轉校正 {3}"
+    },
+    {
+      "key": "calib_start",
+      "value": "進入球道開始校正"
+    },
+    {
+      "key": "calib_bar",
+      "value": "動作校正　第 {0} / {1} 球"
+    },
+    {
+      "key": "calib_do_straight",
+      "value": "投出直球：手腕保持不轉，直直往前送"
+    },
+    {
+      "key": "calib_do_left",
+      "value": "投出左曲球：出手時手腕向左轉（逆時針）"
+    },
+    {
+      "key": "calib_do_right",
+      "value": "投出右曲球：出手時手腕向右轉（順時針）"
+    },
+    {
+      "key": "calib_ready_prompt",
+      "value": "球放胸前站好，按 OK 後：往後擺 → 往前擺出手"
+    },
+    {
+      "key": "calib_step_ok",
+      "value": "第 {0}/{1} 球完成"
+    },
+    {
+      "key": "calib_done_short",
+      "value": "校正完成！"
+    },
+    {
+      "key": "calib_report_title",
+      "value": "校正完成"
+    },
+    {
+      "key": "cr_speed",
+      "value": "出手速度"
+    },
+    {
+      "key": "cr_amplitude",
+      "value": "手臂擺幅（後擺 / 前擺）"
+    },
+    {
+      "key": "cr_amplitude_value",
+      "value": "{0:0}° / {1:0}°"
+    },
+    {
+      "key": "cr_accel",
+      "value": "最大加速度"
+    },
+    {
+      "key": "cr_consistency",
+      "value": "直球穩定度"
+    },
+    {
+      "key": "cr_aim",
+      "value": "直球方向修正"
+    },
+    {
+      "key": "cr_left",
+      "value": "左曲球手腕旋轉"
+    },
+    {
+      "key": "cr_right",
+      "value": "右曲球手腕旋轉"
+    },
+    {
+      "key": "cr_spin_ok",
+      "value": "✓ 已學會你的直球、左曲球、右曲球差異，之後會照你的手腕動作出球。"
+    },
+    {
+      "key": "cr_spin_unclear",
+      "value": "左右曲球的手腕旋轉差異太小，旋轉維持原本設定。可再校正一次，出手時手腕轉明顯一點。"
+    },
+    {
+      "key": "calib_finish",
+      "value": "完成"
+    },
+    {
+      "key": "calib_again",
+      "value": "重新校正"
+    },
+    {
+      "key": "chart_running",
+      "value": "累計分數走勢"
+    },
+    {
+      "key": "chart_frames",
+      "value": "每格擊倒瓶數"
+    },
+    {
+      "key": "chart_outcomes",
+      "value": "每格結果分佈"
+    },
+    {
+      "key": "chart_speed",
+      "value": "球速變化"
+    },
+    {
+      "key": "chart_accuracy",
+      "value": "進球點分佈（第一球）"
+    },
+    {
+      "key": "chart_records",
+      "value": "與個人紀錄比較"
+    },
+    {
+      "key": "chart_recent",
+      "value": "最近比賽分數"
+    },
+    {
+      "key": "chart_lifetime",
+      "value": "生涯投球結果"
+    },
+    {
+      "key": "chart_no_games",
+      "value": "還沒有完成的比賽"
+    },
+    {
+      "key": "legend_this_game",
+      "value": "本局"
+    },
+    {
+      "key": "legend_avg_pace",
+      "value": "平均步調"
+    },
+    {
+      "key": "legend_best_pace",
+      "value": "最佳步調"
+    },
+    {
+      "key": "legend_ball1",
+      "value": "第一球"
+    },
+    {
+      "key": "legend_ball2",
+      "value": "第二球"
+    },
+    {
+      "key": "legend_ball3",
+      "value": "第三球"
+    },
+    {
+      "key": "legend_avg",
+      "value": "平均"
+    },
+    {
+      "key": "legend_top",
+      "value": "最快"
+    },
+    {
+      "key": "legend_score",
+      "value": "分數"
+    },
+    {
+      "key": "legend_best",
+      "value": "最佳"
+    },
+    {
+      "key": "out_strike",
+      "value": "全倒"
+    },
+    {
+      "key": "out_spare",
+      "value": "補中"
+    },
+    {
+      "key": "out_open",
+      "value": "未補中"
+    },
+    {
+      "key": "out_other",
+      "value": "其他"
+    },
+    {
+      "key": "out_gutter",
+      "value": "洗溝"
+    },
+    {
+      "key": "acc_pocket_rate",
+      "value": "本局口袋命中率"
+    },
+    {
+      "key": "acc_lifetime",
+      "value": "生涯口袋命中率 {0:0}%"
+    },
+    {
+      "key": "acc_mean_miss",
+      "value": "平均偏差 {0:0.0} cm {1}"
+    },
+    {
+      "key": "rec_this_game",
+      "value": "本局"
+    },
+    {
+      "key": "rec_average",
+      "value": "生涯平均"
+    },
+    {
+      "key": "rec_best",
+      "value": "最佳紀錄"
+    },
+    {
+      "key": "rec_strike_rate",
+      "value": "全倒率：本局 {0:0}% · 生涯 {1:0}%"
+    },
+    {
+      "key": "rec_above_avg",
+      "value": "比平均高 {0:0} 分 ▲"
+    },
+    {
+      "key": "rec_below_avg",
+      "value": "比平均低 {0:0} 分 ▼"
+    },
+    {
+      "key": "tap_to_continue",
+      "value": "點擊畫面繼續 ▶"
+    },
+    {
+      "key": "save",
+      "value": "儲存"
+    },
+    {
+      "key": "saved",
+      "value": "✓ 已儲存"
+    },
+    {
+      "key": "unsaved_title",
+      "value": "尚未儲存"
+    },
+    {
+      "key": "unsaved_text",
+      "value": "設定有變更還沒儲存，要先儲存嗎？"
+    },
+    {
+      "key": "save_and_leave",
+      "value": "儲存並離開"
+    },
+    {
+      "key": "discard_changes",
+      "value": "不儲存"
+    },
+    {
+      "key": "keep_editing",
+      "value": "繼續編輯"
+    },
+    {
+      "key": "audio_section",
+      "value": "音效與音樂"
+    },
+    {
+      "key": "sound_pack",
+      "value": "音效風格（點選可試聽）"
+    },
+    {
+      "key": "pack_alley",
+      "value": "真實球館"
+    },
+    {
+      "key": "pack_neon",
+      "value": "霓虹電音"
+    },
+    {
+      "key": "pack_arcade",
+      "value": "8-bit 街機"
+    },
+    {
+      "key": "pack_cartoon",
+      "value": "卡通趣味"
+    },
+    {
+      "key": "pack_alley_desc",
+      "value": "木質球瓶的清脆撞擊聲，全倒時觀眾歡呼鼓掌。"
+    },
+    {
+      "key": "pack_neon_desc",
+      "value": "晶瑩鈴聲與合成器，搭配寬廣殘響。"
+    },
+    {
+      "key": "pack_arcade_desc",
+      "value": "復古遊樂場的方波音效與勝利小曲。"
+    },
+    {
+      "key": "pack_cartoon_desc",
+      "value": "木魚、馬林巴琴和滑音哨，洗溝還有「哇哇哇」。"
+    },
+    {
+      "key": "music",
+      "value": "背景音樂"
+    },
+    {
+      "key": "music_off",
+      "value": "關閉音樂"
+    },
+    {
+      "key": "music_auto",
+      "value": "配合球館"
+    },
+    {
+      "key": "music_auto_now",
+      "value": "「{0}」現在播放：{1}"
+    },
+    {
+      "key": "music_now",
+      "value": "現在播放：{0}"
+    },
+    {
+      "key": "music_volume",
+      "value": "音樂音量"
+    },
+    {
+      "key": "music_lounge",
+      "value": "爵士酒廊"
+    },
+    {
+      "key": "music_disco",
+      "value": "迪斯可放克"
+    },
+    {
+      "key": "music_synthwave",
+      "value": "霓虹合成波"
+    },
+    {
+      "key": "music_rockabilly",
+      "value": "50 年代搖滾"
+    },
+    {
+      "key": "music_aquatic",
+      "value": "深海氛圍"
+    },
+    {
+      "key": "music_rock",
+      "value": "熱血搖滾"
+    },
+    {
+      "key": "music_lofi",
+      "value": "Lo-fi 放鬆"
+    },
+    {
+      "key": "music_zen",
+      "value": "和風禪意"
+    },
+    {
+      "key": "music_cosmic",
+      "value": "宇宙漫遊"
+    },
+    {
+      "key": "shop_tab_balls",
+      "value": "保齡球"
+    },
+    {
+      "key": "shop_tab_characters",
+      "value": "角色造型"
+    },
+    {
+      "key": "shop_wear",
+      "value": "換上"
+    },
+    {
+      "key": "shop_char_hint",
+      "value": "換個造型上場吧！角色只改變外觀，不影響投球。"
+    },
+    {
+      "key": "shop_compare_hint",
+      "value": "白線 = 目前用的球"
+    },
+    {
+      "key": "stat_hook",
+      "value": "勾球力"
+    },
+    {
+      "key": "stat_length",
+      "value": "滑行"
+    },
+    {
+      "key": "stat_backend",
+      "value": "尾勁"
+    },
+    {
+      "key": "stat_control",
+      "value": "控制性"
+    },
+    {
+      "key": "cover_pearl",
+      "value": "珍珠樹脂"
+    },
+    {
+      "key": "cover_hybrid",
+      "value": "混合樹脂"
+    },
+    {
+      "key": "cover_solid",
+      "value": "實心樹脂"
+    },
+    {
+      "key": "core_pancake",
+      "value": "平板球心"
+    },
+    {
+      "key": "core_symmetric",
+      "value": "對稱球心"
+    },
+    {
+      "key": "core_asymmetric",
+      "value": "非對稱球心"
+    },
+    {
+      "key": "surface_polished",
+      "value": "亮面"
+    },
+    {
+      "key": "surface_matte",
+      "value": "霧面"
+    },
+    {
+      "key": "ballfor_plastic",
+      "value": "幾乎不轉彎，最適合打直球補中。"
+    },
+    {
+      "key": "ballfor_urethane",
+      "value": "提早轉彎、弧線平穩好控制，適合新手。"
+    },
+    {
+      "key": "ballfor_pearl",
+      "value": "前段滑得遠，後段突然急轉，適合乾球道。"
+    },
+    {
+      "key": "ballfor_hybrid",
+      "value": "勾球力強又不失穩定，全能型。"
+    },
+    {
+      "key": "ballfor_solid",
+      "value": "很早咬住球道，弧線大而連續，適合油多的球道。"
+    },
+    {
+      "key": "ball_guide_title",
+      "value": "選球指南：買球時要看什麼？"
+    },
+    {
+      "key": "ball_guide",
+      "value": "<b><color=#FF66BF>勾球力</color></b>：球能轉多大的彎。勾得多比較容易以好角度打進「口袋」（1-3 號瓶之間），全倒率較高，但也較難控制。\n<b><color=#4DD9FF>滑行</color></b>：球在開始轉彎前能滑多遠。滑行長的球後段才轉；滑行短的球很早就開始轉彎。\n<b><color=#FFBF40>尾勁</color></b>：後段轉彎有多「急」。尾勁強的球進瓶角度大、撞擊力強；尾勁弱的球弧線平順。\n<b><color=#73FF8C>控制性</color></b>：球沾上球道油之後，表現還有多穩定。控制性高的球比較不怕油（記得擦球！）。\n<b>球皮材質</b>：塑膠（補中球）→ 聚氨酯（穩定）→ 珍珠 / 混合 / 實心樹脂（勾球力最強）。\n<b>球心</b>：非對稱球心轉得更兇、更有爆發力；對稱球心反應較平均。\n<b>表面</b>：亮面滑得遠、後段急轉；霧面早咬球道、弧線平滑。\n<b>重量</b>：重球撞擊力強、瓶子飛得更散，但出手速度稍慢。一般建議約體重的 10%，最重 16 磅。"
+    },
+    {
+      "key": "ball_candy",
+      "value": "彩虹糖"
+    },
+    {
+      "key": "ball_sweetheart",
+      "value": "甜心"
+    },
+    {
+      "key": "ball_pixel",
+      "value": "像素街機"
+    },
+    {
+      "key": "ball_zebra",
+      "value": "斑馬"
+    },
+    {
+      "key": "ball_camo",
+      "value": "迷彩"
+    },
+    {
+      "key": "ball_sunset",
+      "value": "夕陽"
+    },
+    {
+      "key": "ball_glitter",
+      "value": "金蔥閃粉"
+    },
+    {
+      "key": "ball_tiedye",
+      "value": "渲染嬉皮"
+    },
+    {
+      "key": "ball_leopard",
+      "value": "豹紋"
+    },
+    {
+      "key": "ball_starlight",
+      "value": "星光"
+    },
+    {
+      "key": "ball_marble",
+      "value": "大理石"
+    },
+    {
+      "key": "ball_honeycomb",
+      "value": "蜂巢"
+    },
+    {
+      "key": "ball_thunder",
+      "value": "雷霆"
+    },
+    {
+      "key": "ball_carbon",
+      "value": "碳纖維"
+    },
+    {
+      "key": "outfit_neon",
+      "value": "霓虹騎士"
+    },
+    {
+      "key": "outfit_neon_desc",
+      "value": "招牌霓虹頭盔與戰衣。"
+    },
+    {
+      "key": "outfit_classic",
+      "value": "經典球友"
+    },
+    {
+      "key": "outfit_classic_desc",
+      "value": "紅色保齡球衫，球館常客。"
+    },
+    {
+      "key": "outfit_sporty",
+      "value": "運動少年"
+    },
+    {
+      "key": "outfit_sporty_desc",
+      "value": "棒球帽配運動服，輕鬆上場。"
+    },
+    {
+      "key": "outfit_retro",
+      "value": "50 年代型男"
+    },
+    {
+      "key": "outfit_retro_desc",
+      "value": "飛機頭、薄荷襯衫、反摺牛仔褲。"
+    },
+    {
+      "key": "outfit_kitty",
+      "value": "貓耳少女"
+    },
+    {
+      "key": "outfit_kitty_desc",
+      "value": "粉紅帽 T 加上可愛貓耳。"
+    },
+    {
+      "key": "outfit_ninja",
+      "value": "忍者"
+    },
+    {
+      "key": "outfit_ninja_desc",
+      "value": "無聲無息，一擊全倒。"
+    },
+    {
+      "key": "outfit_astronaut",
+      "value": "太空人"
+    },
+    {
+      "key": "outfit_astronaut_desc",
+      "value": "在無重力球道上也能打出好球。"
+    },
+    {
+      "key": "outfit_disco",
+      "value": "迪斯可之王"
+    },
+    {
+      "key": "outfit_disco_desc",
+      "value": "爆炸頭、金色襯衫和墨鏡。"
+    },
+    {
+      "key": "outfit_rocker",
+      "value": "龐克搖滾"
+    },
+    {
+      "key": "outfit_rocker_desc",
+      "value": "發光雞冠頭，皮衣加墨鏡。"
+    },
+    {
+      "key": "outfit_robot",
+      "value": "機器人"
+    },
+    {
+      "key": "outfit_robot_desc",
+      "value": "精準計算每一球的角度。"
+    },
+    {
+      "key": "outfit_king",
+      "value": "球館國王"
+    },
+    {
+      "key": "outfit_king_desc",
+      "value": "戴上皇冠，君臨球道。"
+    },
+    {
+      "key": "text_size",
+      "value": "字體大小"
+    },
+    {
+      "key": "text_size_sample",
+      "value": "文字預覽：保齡球 Strike！"
+    },
+    {
+      "key": "motion_timeout",
+      "value": "沒偵測到往前揮，已停止偵測。準備好再按一次 OK"
+    },
+    {
+      "key": "technique",
+      "value": "球路"
+    },
+    {
+      "key": "tech_onehand",
+      "value": "單手"
+    },
+    {
+      "key": "tech_onehand_desc",
+      "value": "一般單手出球：滑出弧線或轉手腕會打出曲球，往外丟再大幅勾回會變成大曲球，往慣用手那側彎則是反曲球"
+    },
+    {
+      "key": "tech_spinner",
+      "value": "飛碟球"
+    },
+    {
+      "key": "tech_spinner_desc",
+      "value": "飛碟球：球像陀螺一樣旋轉，幾乎不轉彎、不怕球道上的油，很準，適合補中；碰到球瓶會把它們往旁邊甩"
+    },
+    {
+      "key": "tech_twohand",
+      "value": "雙手球"
+    },
+    {
+      "key": "tech_twohand_desc",
+      "value": "雙手球：轉速高，弧線更大、更晚、更犀利，撞瓶更有力；手勢一樣，彎曲幅度約 1.6 倍，較難控制"
+    },
+    {
+      "key": "style_straight",
+      "value": "直球"
+    },
+    {
+      "key": "style_hook",
+      "value": "曲球"
+    },
+    {
+      "key": "style_backup",
+      "value": "反曲球"
+    },
+    {
+      "key": "style_bigcurve",
+      "value": "大曲球"
+    },
+    {
+      "key": "style_spinner",
+      "value": "飛碟球"
+    },
+    {
+      "key": "style_twohanded",
+      "value": "雙手球"
+    },
+    {
+      "key": "player_turn_named",
+      "value": "輪到 {0}"
+    },
+    {
+      "key": "calib_bar_named",
+      "value": "動作校正（{2}）　第 {0} / {1} 球"
+    },
+    {
+      "key": "venue_all",
+      "value": "所有球館"
+    },
+    {
+      "key": "profile_default_name",
+      "value": "玩家 {0}"
+    },
+    {
+      "key": "continue_match",
+      "value": "▶ 繼續上一局（{0}）"
+    },
+    {
+      "key": "overwrite_title",
+      "value": "有未完成的一局"
+    },
+    {
+      "key": "overwrite_text",
+      "value": "{0} 存了一局還沒打完。開始新的一局會把它蓋掉。"
+    },
+    {
+      "key": "new_match",
+      "value": "開始新的一局"
+    },
+    {
+      "key": "continue_saved",
+      "value": "繼續上一局"
+    },
+    {
+      "key": "setup_title",
+      "value": "{0} 位玩家"
+    },
+    {
+      "key": "setup_hint",
+      "value": "為每位玩家設定名字、校正檔、角色外觀、球和球路"
+    },
+    {
+      "key": "name_placeholder",
+      "value": "玩家 {0} 的名字"
+    },
+    {
+      "key": "profile",
+      "value": "校正檔"
+    },
+    {
+      "key": "not_calibrated",
+      "value": "未校正"
+    },
+    {
+      "key": "calibrated",
+      "value": "已校正"
+    },
+    {
+      "key": "setup_look",
+      "value": "角色"
+    },
+    {
+      "key": "setup_ball",
+      "value": "球"
+    },
+    {
+      "key": "calib_profiles",
+      "value": "校正檔"
+    },
+    {
+      "key": "calib_profiles_hint",
+      "value": "每個人的揮臂都不一樣。最多可存 {0} 個校正檔，多人遊戲時可以為每位玩家各選一個。點一下選擇要使用的校正檔。"
+    },
+    {
+      "key": "profile_add",
+      "value": "＋ 新增校正檔（{0}/{1}）"
+    },
+    {
+      "key": "profile_name",
+      "value": "名稱"
+    },
+    {
+      "key": "profile_uncalibrated",
+      "value": "這個校正檔還沒有校正過"
+    },
+    {
+      "key": "profile_reset",
+      "value": "清除校正資料"
+    },
+    {
+      "key": "profile_reset_text",
+      "value": "要清除「{0}」的揮臂校正資料嗎？名字和慣用手會保留。"
+    },
+    {
+      "key": "profile_delete",
+      "value": "刪除校正檔"
+    },
+    {
+      "key": "profile_delete_text",
+      "value": "要刪除「{0}」嗎？這無法復原。"
+    },
+    {
+      "key": "calib_how",
+      "value": "校正怎麼做"
+    },
+    {
+      "key": "restart_confirm_title",
+      "value": "重新開始？"
+    },
+    {
+      "key": "restart_confirm_game",
+      "value": "這一局目前的分數會全部清除，從第 1 格重新開始。"
+    },
+    {
+      "key": "restart_confirm_text",
+      "value": "目前的進度會清除，重新開始。"
+    },
+    {
+      "key": "leave_confirm_title",
+      "value": "回主選單？"
+    },
+    {
+      "key": "leave_confirm_game",
+      "value": "可以把這一局存起來，之後在主選單按「繼續上一局」接著打。"
+    },
+    {
+      "key": "leave_confirm_text",
+      "value": "目前的進度不會保留。"
+    },
+    {
+      "key": "save_and_quit",
+      "value": "儲存並回主選單"
+    },
+    {
+      "key": "quit_no_save",
+      "value": "不儲存，直接離開"
+    },
+    {
+      "key": "settings_profile_note",
+      "value": "慣用手、靈敏度和瞄準修正會存在校正檔「{0}」"
+    },
+    {
+      "key": "profile_button",
+      "value": "校正檔：{0}（{1}）"
     }
   ]
 }

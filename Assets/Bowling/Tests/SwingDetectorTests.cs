@@ -8,9 +8,10 @@ public class SwingDetectorTests
     const float Rate = 60f; // samples per second, like a phone at 60 fps
 
     // A pendulum swing about `axis`: still, backswing (0.5 s), forward swing (0.45 s), release at its peak.
-    static SwingResult Swing(Vector3 axis, float back, float forward, float yawRate = 0f, float twist = 0f, Vector3? gravity = null, bool lateRelease = false)
+    static SwingResult Swing(Vector3 axis, float back, float forward, float yawRate = 0f, float twist = 0f, Vector3? gravity = null, bool lateRelease = false,
+        bool followThrough = false, SwingDetector detector = null)
     {
-        var d = new SwingDetector();
+        var d = detector ?? new SwingDetector();
         d.Begin();
         axis.Normalize();
         Vector3 g = gravity ?? new Vector3(0f, 0f, -1f);
@@ -32,7 +33,13 @@ public class SwingDetectorTests
         // Holding on into the follow-through: the arm slows to a fifth of its speed before the thumb lifts.
         if (lateRelease)
             for (int i = 1; i <= 15; i++) Add(axis * forward * Mathf.Lerp(1f, 0.2f, i / 15f));
-        return d.Evaluate();
+        // Released automatically: the arm slows right down, then wobbles back a little.
+        if (followThrough)
+        {
+            for (int i = 1; i <= 12; i++) Add(axis * forward * Mathf.Lerp(1f, 0.1f, i / 12f));
+            for (int i = 0; i < 8; i++) Add(-axis * 0.6f);
+        }
+        return d.Evaluate(releaseAtPeak: followThrough);
     }
 
     // A quick snap of the wrist with no real swing.
@@ -144,5 +151,50 @@ public class SwingDetectorTests
         var r = Swing(Vector3.right, back: 1f, forward: 1.2f);
         Assert.IsFalse(r.valid);
         Assert.AreEqual("swing_too_slow", r.failKey);
+    }
+
+    [Test]
+    public void AutoReleaseReadsSpeedAtThePeak()
+    {
+        // A brisk swing released after the arm slowed down must not read as slow.
+        var r = Swing(Vector3.right, back: 4f, forward: 6f, followThrough: true);
+        Assert.IsTrue(r.valid, r.failKey);
+        Assert.Less(Mathf.Abs(r.peakRate - 6f), 1f);
+        Assert.IsFalse(r.late);
+    }
+
+    [Test]
+    public void CalibrationAcceptsAGentleSwing()
+    {
+        var d = new SwingDetector { MinForwardRate = 1f, MinBackswingRate = 0.8f, MinForwardAngle = 0.5f };
+        var r = Swing(Vector3.right, back: 1.2f, forward: 2f, followThrough: true, detector: d);
+        Assert.IsTrue(r.valid, r.failKey);
+    }
+
+    // Ready-then-swing flow: pausing at the top of the backswing must not look like a finished swing.
+    [Test]
+    public void ProgressCountsBackswingThenForward()
+    {
+        var d = new SwingDetector();
+        d.Begin();
+        float t = 0f;
+        void Add(Vector3 w) { d.Add(new MotionSample { t = t, gyro = w, gravity = Vector3.down }); t += 1f / Rate; }
+        for (int i = 0; i < 12; i++) Add(Vector3.zero);
+        Assert.AreEqual(0, d.Progress(2.5f).phases);
+
+        for (int i = 0; i < 15; i++) Add(Vector3.right * -5f * Mathf.Sin(Mathf.PI * 0.5f * (i + 1f) / 15f));
+        var mid = d.Progress(2.5f);
+        Assert.AreEqual(1, mid.phases);
+        Assert.IsTrue(mid.lastActive, "still swinging back");
+
+        for (int i = 0; i < 15; i++) Add(Vector3.zero); // pause at the top
+        var top = d.Progress(2.5f);
+        Assert.AreEqual(1, top.phases);
+        Assert.IsFalse(top.lastActive);
+
+        for (int i = 0; i < 27; i++) Add(Vector3.right * 8f * Mathf.Sin(Mathf.PI * 0.5f * (i + 1f) / 27f));
+        for (int i = 0; i < 12; i++) Add(Vector3.right * 8f * Mathf.Lerp(1f, 0.1f, (i + 1f) / 12f));
+        Assert.AreEqual(2, d.Progress(2.5f).phases);
+        Assert.IsTrue(d.Evaluate(releaseAtPeak: true).valid);
     }
 }

@@ -85,8 +85,31 @@ public static class SaveSystem
         _ => "en",
     };
 
+    // While the Settings screen has unsaved edits, writes wait here until the player saves or
+    // discards them, so backing out without saving never leaves half-applied settings on disk.
+    public static bool Deferred { get; private set; }
+    static bool deferredDirty;
+
+    public static void BeginDeferred()
+    {
+        Deferred = true;
+        deferredDirty = false;
+    }
+
+    public static void EndDeferred()
+    {
+        Deferred = false;
+        if (deferredDirty) Save();
+        deferredDirty = false;
+    }
+
     public static void Save()
     {
+        if (Deferred)
+        {
+            deferredDirty = true;
+            return;
+        }
         if (!Application.isPlaying)
         {
             Flush();
@@ -118,7 +141,7 @@ public static class SaveSystem
     // the app before the 0.5s delay is up (e.g. the player backs out right after a game ends).
     static void FlushPending()
     {
-        if (pendingSaveSince >= 0f) Flush();
+        if (pendingSaveSince >= 0f && !Deferred) Flush();
     }
 
     public static void Flush()
@@ -137,6 +160,8 @@ public static class SaveSystem
         store = testStore;
         data = null;
         pendingSaveSince = -1f;
+        Deferred = false;
+        deferredDirty = false;
     }
 
     class Runner : MonoBehaviour

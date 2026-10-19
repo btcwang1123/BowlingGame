@@ -15,6 +15,16 @@ public static class PlayerStats
     public static float TopSpeedKmh => S.topSpeedKmh;
 
     public static float AverageScore => GamesPlayed == 0 ? 0f : (float)TotalScore / GamesPlayed;
+    public static int[] RecentScores => S.recentScores ?? new int[0];
+    public static float StrikeRate => Throws == 0 ? 0f : (float)Strikes / Throws;
+    public static float PocketRate => S.analyzedThrows == 0 ? 0f : (float)S.pocketHits / S.analyzedThrows;
+
+    public static void RecordEntry(bool pocket)
+    {
+        S.analyzedThrows++;
+        if (pocket) S.pocketHits++;
+        SaveSystem.Save();
+    }
 
     public static void RecordThrow(string mark, float speedKmh)
     {
@@ -31,6 +41,9 @@ public static class PlayerStats
     {
         S.gamesPlayed++;
         S.totalScore += score;
+        var recent = new System.Collections.Generic.List<int>(RecentScores) { score };
+        if (recent.Count > 20) recent.RemoveRange(0, recent.Count - 20);
+        S.recentScores = recent.ToArray();
         bool best = score > S.bestScore;
         if (best) S.bestScore = score;
         SaveSystem.Save();

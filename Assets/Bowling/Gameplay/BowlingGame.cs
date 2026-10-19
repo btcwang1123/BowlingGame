@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 // Everything on screen is drawn by BowlingUI, which reads this class.
 public class BowlingGame : MonoBehaviour
 {
-    public enum Mode { Standard, Practice, Challenge }
+    public enum Mode { Standard, Practice, Challenge, Calibration }
     public enum Phase { Menu, Aiming, Throwing, Rolling, Settling, Result, Replay, Finished }
 
     [Header("Swipe → throw tuning")]
@@ -38,7 +38,12 @@ public class BowlingGame : MonoBehaviour
     const float LockUpward = 0.03f;     // finger moved this far up (screen heights) → stop positioning, it's a throw
     const float MaxRollTime = 10f;
     const float MinSettleTime = 1.5f, MaxSettleTime = 4f;
-    const float ResultTime = 2f;
+    const float MinResultTime = 0.35f;   // a tap this soon after the result shows is the throw's own finger lifting
+    const float WipeTime = 1.1f;
+    const float OilPerThrow = 0.2f;     // the ball picks up lane oil with every throw…
+    const float OilHookLoss = 0.45f;    // …and a fully oily ball hooks this much less
+    const float ForwardTimeout = 3f;    // backswing seen, but no forward swing this long after → stop
+    const float ArmTimeout = 10f;       // OK pressed but no complete swing at all this long → stop
 
     public static readonly Color[] PlayerColors =
         { new(0.3f, 1f, 1f), new(1f, 0.4f, 0.9f), new(1f, 0.85f, 0.3f), new(0.6f, 1f, 0.4f) };
@@ -60,6 +65,7 @@ public class BowlingGame : MonoBehaviour
     RackController rack;
     ReplayRecorder replayRecorder;
     CameraRig cameraRig;
+    VenueStyler venueStyler;
     IMatchDriver driver = new LocalMatchDriver();
 
     // ---- State the UI reads ----
@@ -77,6 +83,16 @@ public class BowlingGame : MonoBehaviour
     public bool UsingMotion => GameSettings.Control == ControlMode.Motion && MotionInput.Available;
     public bool MotionRecording => motion != null && motion.Recording;
     public MotionInput Motion => motion;
+    // Motion "ready, then swing" flow: true after the player presses OK and the game is capturing
+    // the swing. The ball releases automatically when the swing completes (no need to hold the screen).
+    public bool MotionArmed { get; private set; }
+    // The armed swing took too long (no forward swing seen): the capture stopped, so a stray
+    // movement later can't throw the ball. The player presses OK again.
+    public bool SwingTimedOut { get; private set; }
+    // 0–1: how much of the current wait has run out, for the on-screen countdown.
+    public float SwingTimeoutProgress => !MotionArmed ? 0f
+        : Mathf.Max((Time.unscaledTime - armedAt) / ArmTimeout,
+            motion.Stage == MotionInput.SwingStage.SwingForward ? (Time.unscaledTime - stageSince) / ForwardTimeout : 0f);
 
     public int PracticeLeave { get; private set; }
     public int PracticeThrows { get; private set; }
@@ -87,10 +103,77 @@ public class BowlingGame : MonoBehaviour
     public int BallsUsed { get; private set; }
     public int ChallengeStars { get; private set; }   // 0 = failed
 
+    public CalibrationSession Calibration { get; private set; }
+
+    // Throw analysis: every throw this game, and the one in flight / just finished.
+    public List<ThrowRecord> ThrowLog { get; } = new();
+    public ThrowRecord CurrentThrow { get; private set; }
+    public float AverageSpeedKmh => ThrowLog.Count == 0 ? 0f : ThrowLog.Average(t => t.speedKmh);
+
+    // Magnifier: a close look at the pins while aiming or after the throw.
+    public bool ZoomPins { get; private set; }
+    public bool CanZoom => !Paused && (CurrentPhase is Phase.Aiming or Phase.Settling or Phase.Result) && !MotionArmed && !Wiping;
+
+    // Ball wiping: lane oil builds up on the ball with each throw and takes the bite out of its hook.
+    public float BallOil { get; private set; }
+    public bool Wiping => wipeTime >= 0f;
+    public float WipeProgress => Wiping ? Mathf.Clamp01(wipeTime / WipeTime) : 0f;
+    public bool CanWipe => CurrentPhase == Phase.Aiming && !Paused && !Wiping && !MotionArmed && !swiping;
+
+    public int CoinsThisGame { get; private set; }
+
+    // Who is playing a standard game: name, calibration profile, look and ball for each player.
+    // Empty outside standard games (practice, challenges and calibration use the defaults).
+    public List<SaveData.PlayerSlot> Players { get; } = new();
+    SaveData.PlayerSlot Slot => Players.Count == 0 ? null : Players[Mathf.Clamp(CurrentPlayer, 0, Players.Count - 1)];
+
+    public string PlayerName(int p) =>
+        p >= 0 && p < Players.Count && !string.IsNullOrWhiteSpace(Players[p].name) ? Players[p].name.Trim() : $"P{p + 1}";
+
+    // The current player's ball and outfit: their own pick, or what's equipped in the pro shop.
+    public BallDesign CurrentBall
+    {
+        get
+        {
+            var id = Slot?.ball;
+            if (string.IsNullOrEmpty(id)) return ProShop.Equipped;
+            var b = ProShop.Find(id);
+            return ProShop.Owns(b) ? b : ProShop.Equipped;
+        }
+    }
+
+    public Outfit CurrentOutfit
+    {
+        get
+        {
+            var id = Slot?.outfit;
+            if (string.IsNullOrEmpty(id)) return Outfits.Equipped;
+            var o = Outfits.Find(id);
+            return Outfits.Owns(o) ? o : Outfits.Equipped;
+        }
+    }
+
+    // Ball technique for the current player (one-handed, spinner, two-handed), picked while aiming.
+    public BallTechnique Technique
+    {
+        get => CurrentMode == Mode.Calibration ? BallTechnique.OneHanded : techniques[Mathf.Clamp(CurrentPlayer, 0, techniques.Length - 1)];
+        set
+        {
+            if (CurrentMode == Mode.Calibration) return;
+            techniques[Mathf.Clamp(CurrentPlayer, 0, techniques.Length - 1)] = value;
+            if (Players.Count > 0) Players[Mathf.Min(CurrentPlayer, Players.Count - 1)].technique = (int)value;
+            if (Players.Count <= 1) GameSettings.Technique = (int)value;
+        }
+    }
+    public bool CanChangeTechnique => CurrentPhase == Phase.Aiming && !Paused && !Wiping && !MotionArmed && !swiping && CurrentMode != Mode.Calibration;
+    readonly BallTechnique[] techniques = new BallTechnique[4];
+
     public BowlingScore Score => Scores.Count > 0 ? Scores[Mathf.Min(CurrentPlayer, Scores.Count - 1)] : null;
     public bool IsGameOver => CurrentPhase == Phase.Finished;
-    public bool CanThrow => CurrentPhase == Phase.Aiming && !Paused && driver.IsLocalTurn;
+    public bool CanThrow => CurrentPhase == Phase.Aiming && !Paused && !Wiping && driver.IsLocalTurn;
     public bool CanReplay => CurrentPhase == Phase.Result && ReplayRecorder.HasEnoughFrames(lastReport.replay) && !Paused;
+    // After a throw the result, analysis and replay stay up until the player taps the screen.
+    public bool WaitingForTap => CurrentPhase == Phase.Result && !Paused && stateTime >= MinResultTime;
     public event System.Action<string, int> RollScored; // mark, pins knocked
     public event System.Action<RollReport> RollFinished;
     public System.Func<Vector2, bool> PointerOverUI;     // set by BowlingUI
@@ -107,6 +190,10 @@ public class BowlingGame : MonoBehaviour
     List<Obstacle> obstacles = new();
     Transform obstacleRoot;
     RollReport lastReport;
+    float wipeTime = -1f;
+    bool wipedThisBall;
+    float armedAt, stageSince;
+    MotionInput.SwingStage lastStage;
 
     void Awake()
     {
@@ -134,6 +221,8 @@ public class BowlingGame : MonoBehaviour
         rack = new RackController(pins);
         replayRecorder = new ReplayRecorder(ball.transform, pins.Select(p => p.transform).ToArray());
         cameraRig = new CameraRig(cam, kit.additiveMat, aimCameraOffset, aimCameraPitch, followHeight, followDistance, followMaxZ, followPitch);
+        venueStyler = new VenueStyler(cam, kit.additiveMat, ball.transform);
+        ApplyVenue();
         Application.targetFrameRate = 60;
     }
 
@@ -141,21 +230,146 @@ public class BowlingGame : MonoBehaviour
 
     // ---- Starting and leaving modes (called by the UI) ----
 
+    // A standard game with the last line-up (or defaults) for this many players.
     public void StartStandard(int players)
     {
+        var slots = new List<SaveData.PlayerSlot>();
+        for (int i = 0; i < players; i++) slots.Add(DefaultSlot(i, players));
+        StartStandard(slots);
+    }
+
+    public static SaveData.PlayerSlot DefaultSlot(int index, int players)
+    {
+        if (players <= 1)
+            return new SaveData.PlayerSlot { profile = GameSettings.DefaultProfile, technique = GameSettings.Technique };
+        var saved = SaveSystem.Data.playerSlots;
+        if (saved != null && index < saved.Count)
+        {
+            var s = saved[index];
+            return new SaveData.PlayerSlot
+            {
+                name = s.name, profile = Mathf.Clamp(s.profile, 0, GameSettings.Profiles.Count - 1),
+                outfit = s.outfit, ball = s.ball, technique = s.technique,
+            };
+        }
+        return new SaveData.PlayerSlot { profile = Mathf.Min(index, GameSettings.Profiles.Count - 1) };
+    }
+
+    public void StartStandard(IList<SaveData.PlayerSlot> lineUp)
+    {
+        int players = Mathf.Clamp(lineUp.Count, 1, 4);
         GameSettings.PlayerCount = players;
         CurrentMode = Mode.Standard;
         driver = players > 1 ? new LocalMultiplayerMatchDriver() : new LocalMatchDriver();
         Scores.Clear();
         for (int i = 0; i < players; i++) Scores.Add(new BowlingScore());
+        SetPlayers(lineUp.Take(players));
         CurrentPlayer = 0;
         BeginMode();
         rack.RackAll();
         NextBall();
     }
 
+    void SetPlayers(IEnumerable<SaveData.PlayerSlot> lineUp)
+    {
+        Players.Clear();
+        Players.AddRange(lineUp);
+        for (int i = 0; i < techniques.Length; i++)
+            techniques[i] = i < Players.Count ? (BallTechnique)Mathf.Clamp(Players[i].technique, 0, BallTechniques.All.Length - 1) : BallTechnique.OneHanded;
+    }
+
+    // Practice, challenges and calibration: one player with the default profile and gear.
+    void SoloPlayer()
+    {
+        Players.Clear();
+        GameSettings.ClearTurnProfile();
+        techniques[0] = (BallTechnique)Mathf.Clamp(GameSettings.Technique, 0, BallTechniques.All.Length - 1);
+    }
+
+    // ---- A standard game left part-way through ----
+
+    public static bool HasSavedMatch
+    {
+        get
+        {
+            var m = SaveSystem.Data.savedMatch;
+            return m != null && m.valid && m.players != null && m.players.Count > 0;
+        }
+    }
+
+    public static SaveData.SavedMatch SavedMatch => SaveSystem.Data.savedMatch;
+
+    // Called as every ball is set up and as soon as every roll is scored, so a standard game can
+    // always be picked up again. afterRoll: the roll just counted, so save the turn that comes next
+    // (worked out from the score and this roll's knockdown, not the pins, which may be replaying).
+    void SaveMatch(bool afterRoll = false)
+    {
+        if (CurrentMode != Mode.Standard || Scores.Count == 0) return;
+        if (Scores.All(s => s.IsGameOver)) { DiscardSavedMatch(); return; }
+        int next = CurrentPlayer;
+        bool[] standing;
+        if (!afterRoll) standing = pins.Select(p => p.IsStanding).ToArray();
+        else if (Scores[CurrentPlayer].RollInFrame == 0)
+        {
+            do next = (next + 1) % Scores.Count; while (Scores[next].IsGameOver);
+            standing = Enumerable.Repeat(true, 10).ToArray();
+        }
+        else if (rackNext) standing = Enumerable.Repeat(true, 10).ToArray();
+        else standing = Enumerable.Range(0, 10).Select(i => lastReport.standingBefore[i] && !lastReport.knockedMask[i]).ToArray();
+        var m = new SaveData.SavedMatch
+        {
+            valid = true,
+            savedAt = System.DateTime.Now.ToString("MM/dd HH:mm"),
+            currentPlayer = next,
+            ballOil = BallOil,
+            standing = standing,
+        };
+        for (int i = 0; i < Scores.Count; i++)
+        {
+            var slot = i < Players.Count ? Players[i] : DefaultSlot(i, Scores.Count);
+            m.players.Add(new SaveData.SavedPlayer
+            {
+                slot = slot,
+                knocked = Scores[i].Rolls.ToArray(),
+                standingBefore = Scores[i].StandingBefore.ToArray(),
+            });
+        }
+        SaveSystem.Data.savedMatch = m;
+        SaveSystem.Save();
+    }
+
+    public void DiscardSavedMatch()
+    {
+        SaveSystem.Data.savedMatch = new SaveData.SavedMatch();
+        SaveSystem.Save();
+    }
+
+    // Continue the saved game: scores, whose turn, and the pins still standing.
+    public bool ResumeMatch()
+    {
+        if (!HasSavedMatch) return false;
+        var m = SavedMatch;
+        int players = Mathf.Clamp(m.players.Count, 1, 4);
+        GameSettings.PlayerCount = players;
+        CurrentMode = Mode.Standard;
+        driver = players > 1 ? new LocalMultiplayerMatchDriver() : new LocalMatchDriver();
+        Scores.Clear();
+        for (int i = 0; i < players; i++) Scores.Add(BowlingScore.FromHistory(m.players[i].knocked, m.players[i].standingBefore));
+        SetPlayers(m.players.Take(players).Select(p => p.slot));
+        CurrentPlayer = Mathf.Clamp(m.currentPlayer, 0, players - 1);
+        BeginMode();
+        BallOil = Mathf.Clamp01(m.ballOil);
+        var score = Scores[CurrentPlayer];
+        if (score.IsGameOver || score.RollInFrame == 0 || m.standing == null || m.standing.Length != 10) rack.RackAll();
+        else rack.RackStanding(m.standing);
+        NextBall();
+        return true;
+    }
+
+
     public void StartPractice(int leave)
     {
+        SoloPlayer();
         CurrentMode = Mode.Practice;
         driver = new LocalMatchDriver();
         PracticeLeave = Mathf.Clamp(leave, 0, PracticeLeaves.Length - 1);
@@ -167,6 +381,7 @@ public class BowlingGame : MonoBehaviour
 
     public void StartChallenge(int level)
     {
+        SoloPlayer();
         CurrentMode = Mode.Challenge;
         driver = new LocalMatchDriver();
         ChallengeIndex = Mathf.Clamp(level, 0, ChallengeLevels.All.Count - 1);
@@ -180,14 +395,66 @@ public class BowlingGame : MonoBehaviour
         NextBall();
     }
 
+    // On-lane calibration: six guided motion throws (see CalibrationSession).
+    public void StartCalibration()
+    {
+        SoloPlayer();
+        CurrentMode = Mode.Calibration;
+        driver = new LocalMatchDriver();
+        Calibration = new CalibrationSession();
+        BeginMode();
+        rack.RackAll();
+        NextBall();
+    }
+
     public void Restart()
     {
         switch (CurrentMode)
         {
-            case Mode.Standard: StartStandard(Mathf.Max(Scores.Count, 1)); break;
+            case Mode.Standard:
+                DiscardSavedMatch();
+                StartStandard(Players.Count > 0 ? new List<SaveData.PlayerSlot>(Players) : Enumerable.Range(0, Mathf.Max(Scores.Count, 1)).Select(i => DefaultSlot(i, Scores.Count)).ToList());
+                break;
             case Mode.Practice: StartPractice(PracticeLeave); break;
             case Mode.Challenge: StartChallenge(ChallengeIndex); break;
+            case Mode.Calibration: StartCalibration(); break;
         }
+    }
+
+    // The pro shop or venue picker changed something: show it right away.
+    public void ApplyVenue()
+    {
+        venueStyler.Apply(GameSettings.Venue);
+        if (BowlingMusic.Instance != null) BowlingMusic.Instance.Refresh();
+    }
+
+    // Sound pack, music and volume from Settings.
+    public void ApplyAudio()
+    {
+        AudioListener.volume = GameSettings.Volume;
+        if (sound != null) sound.ApplyPack();
+        if (BowlingMusic.Instance != null) BowlingMusic.Instance.Refresh();
+    }
+
+    public void ApplyEquipment()
+    {
+        var design = CurrentBall;
+        ball.ApplyLook(ProShop.Surface(design), design.glow, ProShop.SizeScale[GameSettings.BallSize]);
+        bowler.ApplyOutfit(CurrentOutfit);
+    }
+
+    public void ToggleZoom()
+    {
+        if (ZoomPins) { ZoomPins = false; return; }
+        if (CanZoom) ZoomPins = true;
+    }
+
+    public void WipeBall()
+    {
+        if (!CanWipe) return;
+        ZoomPins = false;
+        wipeTime = 0f;
+        SetMessage("");
     }
 
     public void BackToMenu()
@@ -196,9 +463,15 @@ public class BowlingGame : MonoBehaviour
         SetPaused(false);
         fx.CancelSlowMo();
         motion.Cancel();
+        MotionArmed = false;
+        ZoomPins = false;
+        wipeTime = -1f;
         Scores.Clear();
+        Players.Clear();
+        GameSettings.ClearTurnProfile();
         rack.RackAll();
         ball.PickUp();
+        ApplyEquipment();
         bowler.LeftHanded = GameSettings.LeftHanded;
         bowler.Ready(ball, 0f);
         aimX = 0f;
@@ -211,7 +484,7 @@ public class BowlingGame : MonoBehaviour
     {
         if (paused == Paused) return;
         Paused = paused;
-        if (paused) { fx.CancelSlowMo(); motion.Cancel(); swiping = false; }
+        if (paused) { fx.CancelSlowMo(); motion.Cancel(); MotionArmed = false; swiping = false; }
         Time.timeScale = paused ? 0f : BowlingFX.NormalTimeScale;
     }
 
@@ -219,6 +492,26 @@ public class BowlingGame : MonoBehaviour
     {
         PracticeLeave = Mathf.Clamp(leave, 0, PracticeLeaves.Length - 1);
         if (CurrentPhase == Phase.Aiming) rack.RackPractice(PracticeLeave);
+    }
+
+    // Motion mode: the player pressed OK after getting into the ready pose. Start capturing the whole
+    // swing; UpdateAiming releases the ball automatically when the swing completes.
+    public void ArmMotion()
+    {
+        if (!UsingMotion || CurrentPhase != Phase.Aiming || Paused || Wiping) return;
+        ZoomPins = false;
+        motion.Grip(calibrating: CurrentMode == Mode.Calibration);
+        MotionArmed = true;
+        SwingTimedOut = false;
+        armedAt = stageSince = Time.unscaledTime;
+        lastStage = MotionInput.SwingStage.SwingBack;
+        SetMessage("");
+    }
+
+    public void DisarmMotion()
+    {
+        motion.Cancel();
+        MotionArmed = false;
     }
 
     void BeginMode()
@@ -230,6 +523,12 @@ public class BowlingGame : MonoBehaviour
         aimX = 0f;
         LastThrowInfo = "";
         previousSpeed = 0f;
+        ThrowLog.Clear();
+        CurrentThrow = null;
+        BallOil = 0f;
+        CoinsThisGame = 0;
+        ZoomPins = false;
+        wipeTime = -1f;
     }
 
     void ClearObstacles()
@@ -244,13 +543,25 @@ public class BowlingGame : MonoBehaviour
     void NextBall()
     {
         fx.CancelSlowMo();
+        MotionArmed = false;
+        SwingTimedOut = false;
+        wipeTime = -1f;
+        wipedThisBall = false;
+        // Each player throws with their own calibration, hand, look and ball.
+        if (Players.Count > 0) GameSettings.UseProfileForTurn(Slot.profile);
+        else GameSettings.ClearTurnProfile();
         ball.PickUp();
+        ApplyEquipment();
         ball.Configure(GameSettings.BallMassKg, CurrentMode == Mode.Challenge ? Challenge.ballType : BallType.Normal, pins);
+        var design = CurrentBall;
+        ball.SetReaction(design.SkidZ, design.Backend);
+        if (CurrentMode == Mode.Calibration) aimX = 0f; // calibration throws are all from the middle
         bowler.LeftHanded = GameSettings.LeftHanded;
         bowler.Ready(ball, aimX);
         cameraRig.SnapToAim(aimX);
         SetMessage("");
         SetPhase(Phase.Aiming);
+        if (CurrentMode == Mode.Standard) SaveMatch();
     }
 
     void SetPhase(Phase p)
@@ -275,10 +586,10 @@ public class BowlingGame : MonoBehaviour
         stateTime += Time.deltaTime;
         switch (CurrentPhase)
         {
-            case Phase.Aiming: UpdateAiming(); break;
+            case Phase.Aiming: if (Wiping) UpdateWipe(); else UpdateAiming(); break;
             case Phase.Rolling: UpdateRolling(); break;
             case Phase.Settling: UpdateSettling(); break;
-            case Phase.Result: if (stateTime > ResultTime) AfterResult(); break;
+            case Phase.Result: UpdateResult(); break;
             case Phase.Replay: UpdateReplay(); break;
         }
         if (CurrentMode == Mode.Challenge && CurrentPhase is Phase.Aiming or Phase.Throwing)
@@ -286,9 +597,62 @@ public class BowlingGame : MonoBehaviour
         cameraRig.UpdateAimLine(aimX, GameSettings.AimGuide && CurrentPhase == Phase.Aiming && !Paused);
     }
 
+    // Spin the ball in the bowler's hands with a few sparkles; at the end it's clean.
+    void UpdateWipe()
+    {
+        wipeTime += Time.deltaTime;
+        ball.transform.Rotate(new Vector3(0.3f, 1f, 0.2f), 720f * Time.deltaTime, Space.World);
+        if (Random.value < 0.35f) fx.Sparks(ball.transform.position, Color.white, 2, 0.6f);
+        if (wipeTime < WipeTime) return;
+        wipeTime = -1f;
+        BallOil = 0f;
+        wipedThisBall = true;
+        fx.Sparks(ball.transform.position + Vector3.up * 0.1f, BowlingFX.Cyan, 18, 1.5f);
+        Haptics.Buzz();
+        SetMessage(Loc.T("wipe_done"));
+    }
+
     // ---- Aiming: drag to pick the spot, then flick (swipe) or swing the phone (motion) ----
 
     void UpdateAiming()
+    {
+        if (CurrentMode == Mode.Calibration && !UsingMotion) return; // calibration reads real swings only
+        if (UsingMotion) UpdateAimingMotion();
+        else UpdateAimingSwipe();
+    }
+
+    // Motion: drag left/right to pick the spot; the throw itself starts when the player presses OK
+    // (ArmMotion) and is released automatically once the swing completes.
+    void UpdateAimingMotion()
+    {
+        var pointer = Pointer.current;
+        if (!MotionArmed && CurrentMode != Mode.Calibration && pointer != null && pointer.press.isPressed)
+        {
+            Vector2 pos = pointer.position.ReadValue();
+            if (PointerOverUI == null || !PointerOverUI(pos))
+            {
+                float across = Mathf.Clamp01(pos.x / Screen.width) - 0.5f;
+                aimX = across * (BowlingLane.HalfWidth - BowlingBall.Radius) * 2f;
+                bowler.SetAim(aimX);
+            }
+        }
+        if (!MotionArmed || !motion.Recording) return;
+        if (motion.AutoReleaseReady) { ReleaseSwing(); return; }
+
+        // Stuck waiting: the swing was missed (or never came). Stop capturing and ask for OK again,
+        // rather than letting some later fidget fling the ball.
+        var stage = motion.Stage;
+        if (stage != lastStage) { lastStage = stage; stageSince = Time.unscaledTime; }
+        bool forwardMissed = stage == MotionInput.SwingStage.SwingForward && Time.unscaledTime - stageSince > ForwardTimeout;
+        if (forwardMissed || Time.unscaledTime - armedAt > ArmTimeout)
+        {
+            DisarmMotion();
+            SwingTimedOut = true;
+            Haptics.Buzz();
+        }
+    }
+
+    void UpdateAimingSwipe()
     {
         var pointer = Pointer.current;
         if (pointer == null) return;
@@ -296,19 +660,19 @@ public class BowlingGame : MonoBehaviour
 
         if (pointer.press.wasPressedThisFrame && (PointerOverUI == null || !PointerOverUI(pos)))
         {
+            // A tap while looking through the magnifier just puts it away.
+            if (ZoomPins) { ZoomPins = false; return; }
             swiping = true;
             positionLocked = false;
             lowestY = pos.y;
             swipe.Clear();
             SetMessage("");
-            if (UsingMotion) motion.Grip();
         }
         if (!swiping) return;
 
-        // Drag sideways to pick your spot; it locks once the throw starts
-        // (finger moving up for a swipe, or the phone starting to swing).
+        // Drag sideways to pick your spot; it locks once the finger starts moving up (the throw).
         lowestY = Mathf.Min(lowestY, pos.y);
-        bool throwStarted = UsingMotion ? motion.Swinging : (pos.y - lowestY) / Screen.height > LockUpward;
+        bool throwStarted = (pos.y - lowestY) / Screen.height > LockUpward;
         if (!positionLocked && throwStarted) positionLocked = true;
         if (!positionLocked)
         {
@@ -322,7 +686,7 @@ public class BowlingGame : MonoBehaviour
         if (pointer.press.wasReleasedThisFrame)
         {
             swiping = false;
-            if (UsingMotion) ReleaseSwing(); else ReleaseSwipe();
+            ReleaseSwipe();
         }
     }
 
@@ -357,10 +721,19 @@ public class BowlingGame : MonoBehaviour
 
     void ReleaseSwing()
     {
+        MotionArmed = false;
         var result = motion.Release();
         if (!result.valid) { SetMessage(Loc.T(result.failKey)); return; }
-        var (speed, angle, hook) = MotionInput.ToThrow(result);
         Haptics.Buzz();
+        if (CurrentMode == Mode.Calibration)
+        {
+            var kind = Calibration.CurrentKind;
+            Calibration.Add(result);
+            var (cs, ca, ch) = Calibration.DemoThrow(result, kind);
+            StartThrow(cs, ca, ch, raw: true);
+            return;
+        }
+        var (speed, angle, hook) = MotionInput.ToThrow(result);
         StartThrow(speed, angle, hook, foul: result.late);
     }
 
@@ -373,9 +746,37 @@ public class BowlingGame : MonoBehaviour
         StartThrow(speed, angle, hook);
     }
 
-    void StartThrow(float speed, float angle, float hook, bool foul = false)
+    // raw: calibration demo throws skip the ball's coverstock and oil, so every player sees the same shape.
+    void StartThrow(float speed, float angle, float hook, bool foul = false, bool raw = false)
     {
         speed *= GameSettings.BallSpeedFactor;
+        var style = BallTechniques.Classify(angle, hook, GameSettings.LeftHanded);
+        if (!raw)
+        {
+            var design = CurrentBall;
+            var shot = BallTechniques.Apply(Technique, speed, angle, hook, GameSettings.LeftHanded);
+            speed = shot.speed;
+            angle = shot.angle;
+            hook = shot.hook * design.HookFactor * (1f - OilHookLoss * design.OilSensitivity * BallOil * shot.oilFactor);
+            style = shot.style;
+            ball.SetReaction(design.SkidZ < 0f ? design.SkidZ : design.SkidZ * shot.skidScale, design.Backend + shot.backendAdd);
+            ball.SetTechnique(shot.topSpin, shot.pinScatter, shot.massScale);
+        }
+        else ball.SetReaction(-1f, 0f); // an even, plain hook
+        ZoomPins = false;
+        CurrentThrow = new ThrowRecord
+        {
+            player = CurrentPlayer,
+            frame = CurrentMode == Mode.Standard ? Scores[CurrentPlayer].Frame : ThrowLog.Count,
+            speedKmh = speed * 3.6f,
+            angleDeg = angle,
+            hook = hook,
+            wiped = wipedThisBall,
+            oil = BallOil,
+            leftHanded = GameSettings.LeftHanded,
+            style = style,
+        };
+        if (!raw) BallOil = Mathf.Min(1f, BallOil + OilPerThrow);
         standingBeforeMask = pins.Select(p => p.IsStanding).ToArray();
         hitThisThrow = false;
         foulThisThrow = foul;
@@ -424,6 +825,25 @@ public class BowlingGame : MonoBehaviour
     void FixedUpdate()
     {
         if (CurrentPhase is Phase.Rolling or Phase.Settling) replayRecorder.Sample();
+        if (CurrentPhase == Phase.Rolling && CurrentThrow != null) TrackBall(CurrentThrow);
+    }
+
+    // Record the ball's path for the analysis panel, and where it met the pins.
+    void TrackBall(ThrowRecord t)
+    {
+        Vector3 p = ball.transform.position;
+        if (p.z > BowlingLane.LaneEndZ + 0.3f || p.y < -0.3f) return;
+        if (t.path.Count == 0 || p.z - t.path[^1].y > 0.25f || Mathf.Abs(p.x - t.path[^1].x) > 0.05f)
+            t.path.Add(new Vector2(p.x, p.z));
+        if (!t.reachedPins && !t.gutter && Mathf.Abs(p.x) > BowlingLane.HalfWidth && p.z < BowlingLane.HeadPinZ) t.gutter = true;
+        // Entry: where the ball crosses the line it would touch the head pin from.
+        if (!t.reachedPins && !t.gutter && p.z >= BowlingLane.HeadPinZ - 0.2f)
+        {
+            t.reachedPins = true;
+            t.entryX = p.x;
+            Vector3 v = ball.Velocity;
+            t.entryAngleDeg = Mathf.Atan2(v.x, Mathf.Max(v.z, 0.01f)) * Mathf.Rad2Deg;
+        }
     }
 
     public void StartReplay()
@@ -439,8 +859,27 @@ public class BowlingGame : MonoBehaviour
     {
         if (!replayRecorder.TickPlayback(Time.unscaledDeltaTime)) return;
         foreach (var o in obstacles) o.enabled = true;
-        SetPhase(Phase.Result);
-        stateTime = ResultTime - 1.2f; // a moment to read the result again, then carry on
+        SetPhase(Phase.Result); // back to the result; the player taps to carry on
+    }
+
+    // ---- Result: wait for a tap (anywhere but a button) or Space/Enter, then the next ball ----
+
+    void UpdateResult()
+    {
+        if (!WaitingForTap) return;
+        var pointer = Pointer.current;
+        bool tapped = pointer != null && pointer.press.wasPressedThisFrame &&
+            (PointerOverUI == null || !PointerOverUI(pointer.position.ReadValue()));
+        var kb = Keyboard.current;
+        if (kb != null && (kb.spaceKey.wasPressedThisFrame || kb.enterKey.wasPressedThisFrame)) tapped = true;
+        if (tapped) Continue();
+    }
+
+    public void Continue()
+    {
+        if (!WaitingForTap) return;
+        ZoomPins = false;
+        AfterResult();
     }
 
     // ---- Rolling and counting ----
@@ -477,10 +916,24 @@ public class BowlingGame : MonoBehaviour
         {
             case Mode.Standard: mark = ScoreStandard(knocked, standingCount); break;
             case Mode.Practice: mark = ScorePractice(knocked, cleared, standingCount); break;
+            case Mode.Calibration: mark = ScoreCalibration(knocked); break;
             default: mark = ScoreChallenge(knocked); break;
         }
         if (foulThisThrow) { SetMessage(Loc.T("foul")); sound.Miss(); }
-        PlayerStats.RecordThrow(mark, lastSpeed * 3.6f);
+        if (CurrentThrow != null)
+        {
+            CurrentThrow.knocked = knocked;
+            CurrentThrow.standingBefore = standingCount;
+            CurrentThrow.mark = mark;
+            ThrowLog.Add(CurrentThrow);
+        }
+        if (CurrentMode != Mode.Calibration)
+        {
+            PlayerStats.RecordThrow(mark, lastSpeed * 3.6f);
+            if (CurrentThrow != null && CurrentThrow.reachedPins && standingCount == 10) PlayerStats.RecordEntry(CurrentThrow.InPocket);
+            // Coins: a pin each, plus a bonus for strikes and spares.
+            Award(knocked + (mark == "X" ? 10 : mark == "/" ? 5 : 0));
+        }
         RollScored?.Invoke(mark, knocked);
         SetPhase(Phase.Result);
 
@@ -498,6 +951,7 @@ public class BowlingGame : MonoBehaviour
         };
         RollFinished?.Invoke(lastReport);
         driver.OnRollFinished(lastReport);
+        if (CurrentMode == Mode.Standard) SaveMatch(afterRoll: true);
     }
 
     string ScoreStandard(int knocked, int standingCount)
@@ -522,6 +976,20 @@ public class BowlingGame : MonoBehaviour
         return mark;
     }
 
+    string ScoreCalibration(int knocked)
+    {
+        rackNext = true;
+        string mark = knocked == 0 ? "-" : knocked.ToString();
+        SetMessage(Calibration.Done ? Loc.T("calib_done_short") : Loc.F("calib_step_ok", Calibration.Step, CalibrationSession.Steps.Length));
+        return mark;
+    }
+
+    void Award(int coins)
+    {
+        CoinsThisGame += coins;
+        ProShop.Earn(coins);
+    }
+
     string ScoreChallenge(int knocked)
     {
         BallsUsed++;
@@ -537,6 +1005,7 @@ public class BowlingGame : MonoBehaviour
         {
             ChallengeStars = level.StarsFor(BallsUsed);
             PlayerStats.RecordStars(ChallengeIndex, ChallengeStars);
+            Award(ChallengeStars * 15);
             SetMessage(Loc.T("challenge_clear"), rainbow: true);
             sound.Strike();
             NeonGlow.Flash(BowlingFX.Gold);
@@ -599,14 +1068,21 @@ public class BowlingGame : MonoBehaviour
                 if (ChallengeStars > 0 || BallsUsed >= Challenge.balls) { SetPhase(Phase.Finished); return; }
                 if (rackNext) rack.RackChallenge(Challenge); else rack.SweepFallen();
                 break;
+
+            case Mode.Calibration:
+                if (Calibration.Done) { Calibration.Apply(); SetMessage(""); SetPhase(Phase.Finished); return; }
+                rack.RackAll();
+                break;
         }
         NextBall();
     }
 
     void FinishStandard()
     {
+        DiscardSavedMatch();
         NewBest = false;
         foreach (var s in Scores) NewBest |= PlayerStats.RecordGame(s.RunningTotals()[^1] ?? 0);
+        Award(20 + (Scores[0].RunningTotals()[^1] ?? 0) / 10);
         if (NewBest) NeonGlow.Flash(BowlingFX.Gold);
         sound.GameOver(NewBest);
         SetMessage("");
@@ -615,5 +1091,9 @@ public class BowlingGame : MonoBehaviour
 
     // ---- Camera ----
 
-    void LateUpdate() => cameraRig.Tick(CurrentPhase, aimX, ball.transform.position, fx.ShakeOffset, Time.unscaledDeltaTime);
+    void LateUpdate()
+    {
+        if (ZoomPins && !CanZoom) ZoomPins = false;
+        cameraRig.Tick(CurrentPhase, aimX, ball.transform.position, fx.ShakeOffset, Time.unscaledDeltaTime, ZoomPins);
+    }
 }

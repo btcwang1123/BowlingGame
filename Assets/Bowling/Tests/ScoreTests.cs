@@ -51,4 +51,26 @@ public class ScoreTests
 
     [Test]
     public void TenthFrameStrikeThreeFour() => AssertGame(Concat(Repeat(0, 18), new[] { 10, 3, 4 }), 17, "X 3 4");
+
+    // A game saved part-way through rebuilds to exactly the same scorecard and turn state.
+    [Test]
+    public void FromHistoryRebuildsMidGame()
+    {
+        var original = Play(new[] { 10, 7, 3, 9, 0, 10, 10, 4 });
+        var copy = BowlingScore.FromHistory(original.Rolls.ToList(), original.StandingBefore.ToList());
+        Assert.AreEqual(original.Frame, copy.Frame);
+        Assert.AreEqual(original.RollInFrame, copy.RollInFrame);
+        CollectionAssert.AreEqual(original.RunningTotals(), copy.RunningTotals());
+        for (int f = 0; f < BowlingScore.Frames; f++) CollectionAssert.AreEqual(original.MarksFor(f), copy.MarksFor(f));
+        Assert.AreEqual(10, copy.StandingBefore[copy.StandingBefore.Count - 1]); // the last roll was at a fresh rack
+    }
+
+    [Test]
+    public void FromHistoryOfFullGameIsOver()
+    {
+        var original = Play(Repeat(10, 12));
+        var copy = BowlingScore.FromHistory(original.Rolls.ToList(), original.StandingBefore.ToList());
+        Assert.IsTrue(copy.IsGameOver);
+        Assert.AreEqual(300, copy.RunningTotals()[BowlingScore.Frames - 1]);
+    }
 }

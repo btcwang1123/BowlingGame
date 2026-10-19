@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Instant replay: records the ball + 10 pins at 30 Hz while a roll is live, then plays the
-// recording back in slow motion. Driven by BowlingGame's own FixedUpdate/Update — not a
+// recording back at normal speed. Driven by BowlingGame's own FixedUpdate/Update — not a
 // MonoBehaviour itself. The only replay system; obstacles are intentionally not recorded
 // (ReplayData is ball+pins only) — BowlingGame just freezes them for the duration instead.
 public class ReplayRecorder
@@ -12,7 +12,7 @@ public class ReplayRecorder
     // (a slow ball plus a long settle), not just the typical case.
     const int MaxFrames = 180;
     const int MinFramesForReplay = 6; // ~0.2 s of motion is worth replaying
-    const float PlaybackSpeed = 0.5f;
+    const float PlaybackSpeed = 1f;
 
     readonly Transform[] targets; // [0] = ball, [1..10] = pins 1..10
     readonly List<(Vector3 pos, Quaternion rot)[]> frames = new();
